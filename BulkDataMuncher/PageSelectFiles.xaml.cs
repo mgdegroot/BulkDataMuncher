@@ -20,7 +20,7 @@ namespace BulkDataMuncher
     /// <summary>
     /// Interaction logic for PageSelectFiles.xaml
     /// </summary>
-    public partial class PageSelectFiles : Page
+    public partial class PageSelectFiles : Page, IBasePage
     {
         private ObservableCollection<FileSelection> fileSelection = new ObservableCollection<FileSelection>();
 

@@ -11,14 +11,31 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Column="1" Grid.Row="0" Content="Nieuw..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Stretch" Width="75" Height="30" Name="btnNew" Click="BtnNew_OnClick"/>
-        <Button Grid.Column="1" Grid.Row="1" Content="Toevoegen..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Stretch" Width="75" Height="30" Name="btnAdd" Click="BtnAdd_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="0" Content="Nieuw..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="BtnNew_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="1" Content="Toevoegen..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnAdd" Click="BtnAdd_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="2" Content="Config..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="75" Name="btnConfig" Click="btnConfig_OnClick"/>
+        <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" >
+            <ScrollViewer.Style>
+                <Style TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+                    <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=chkActualSize}" Value="True">
+                            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+                            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+            <Image Source="Resources/Img_Inspector_Gadget_1.png" UseLayoutRounding="False" Margin="10,10,10,10"/>
+        </ScrollViewer>
 
     </Grid>
 </Page>

@@ -18,7 +18,7 @@ namespace BulkDataMuncher
     /// <summary>
     /// Interaction logic for PageNewData.xaml
     /// </summary>
-    public partial class PageNewData : Page
+    public partial class PageNewData : Page, IBasePage
     {
         public PageNewData()
         {

@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("BulkDataMuncher")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
+[assembly: AssemblyCompany("Marcel de Groot (mg.degroot@catnipderby.nl)")]
 [assembly: AssemblyProduct("BulkDataMuncher")]
-[assembly: AssemblyCopyright("Copyright © HP Inc. 2017")]
+[assembly: AssemblyCopyright("Copyright © Marcel de Groot (mg.degroot@catnipderby.nl)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

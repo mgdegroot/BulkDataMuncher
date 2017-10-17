@@ -13,5 +13,10 @@ namespace BulkDataMuncher
     /// </summary>
     public partial class App : Application
     {
+        private void App_OnStartup(object sender, StartupEventArgs e)
+        {
+            // Encrypt config settings if not already done -->
+            ConfigHandler.encryptConfig("appSettings");
+        }
     }
 }
