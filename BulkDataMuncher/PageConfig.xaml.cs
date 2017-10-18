@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,15 +34,28 @@ namespace BulkDataMuncher
             txtDomain.Text = ConfigHandler.Domain;
             txtUsername.Text = ConfigHandler.Username;
             txtPassword.Password = ConfigHandler.Password;
+            txtDatabase.Text = ConfigHandler.DatabasePath;
         }
 
         private void btnSave_OnClick(object sender, RoutedEventArgs e)
         {
-            ConfigHandler.DestinationBase = txtDestination.Text;
-            ConfigHandler.Domain = txtDomain.Text;
-            ConfigHandler.Username = txtUsername.Text;
+            ConfigHandler.DestinationBase = txtDestination.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDestination.Text;
+            ConfigHandler.Domain = txtDomain.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDomain.Text;
+            ConfigHandler.Username = txtUsername.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtUsername.Text;
             ConfigHandler.Password = txtPassword.Password;
-            
+            ConfigHandler.DatabasePath = txtDatabase.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDatabase.Text;
+
+            // TODO: UserContext -->
+            if (!File.Exists(ConfigHandler.DatabasePath))
+            {
+                CasesDB.CreateDatabase();
+            }
+
+            if (NavigationService.CanGoBack)
+            {
+                NavigationService.GoBack();
+            }
+
         }
 
         private void btnClear_OnClick(object sender, RoutedEventArgs e)

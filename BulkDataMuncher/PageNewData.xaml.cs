@@ -33,6 +33,18 @@ namespace BulkDataMuncher
             Case = fetchInfo();
             if (Case != null)
             {
+                if (Util.DirectoryExistst(Case.CaseDirectory))
+                {
+                    if (MessageBox.Show($"Zaak met nummer {Case.Number} bestaat al.\r\nToevoegen aan bestaande zaak?",
+                            "Zaaknummer bestaat al",
+                            MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                    {
+                        NavigationService.Navigate(new PageModifyExisting(){CaseNumber = Case.Number});
+                    }
+                }
+
+                CasesDB.AddCase(Case);
+
                 PageSelectFiles pageSelectFiles = new PageSelectFiles(this.Case);
                 this.NavigationService.Navigate(pageSelectFiles);
             }

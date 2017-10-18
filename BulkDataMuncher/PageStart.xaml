@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:BulkDataMuncher"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="Start">
+      Title="Start"
+      Loaded="PageStart_OnLoaded">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -18,8 +19,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Column="0" Grid.Row="0" Content="Nieuw..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="BtnNew_OnClick"/>
-        <Button Grid.Column="0" Grid.Row="1" Content="Toevoegen..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnAdd" Click="BtnAdd_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="0" Content="Nieuw..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="btnNew_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="1" Content="Toevoegen..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnModify" Click="btnModify_OnClick"/>
         <Button Grid.Column="0" Grid.Row="2" Content="Config..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="75" Name="btnConfig" Click="btnConfig_OnClick"/>
         <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" >
             <ScrollViewer.Style>

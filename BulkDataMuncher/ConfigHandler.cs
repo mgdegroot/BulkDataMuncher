@@ -14,6 +14,7 @@ namespace BulkDataMuncher
         public const string KEY_USERNAME = "USERNAME";
         public const string KEY_PASSWORD = "PASSWORD";
         public const string KEY_DESTINATIONBASE = "DESTINATIONBASE";
+        public const string KEY_DB_PATH = "DB_PATH";
         public const string VALUE_DEFAULT = "<NOT FOUND>";
         
         public static string Username
@@ -26,7 +27,7 @@ namespace BulkDataMuncher
 
         public static string Password
         {
-            get => ConfigurationManager.AppSettings[KEY_PASSWORD] ?? VALUE_DEFAULT;
+            get => ConfigurationManager.AppSettings[KEY_PASSWORD] ?? string.Empty;
             set => writeSetting(KEY_PASSWORD, value);
         }
 
@@ -42,6 +43,12 @@ namespace BulkDataMuncher
         {
             get => ConfigurationManager.AppSettings[KEY_DOMAIN] ?? VALUE_DEFAULT;
             set => writeSetting(KEY_DOMAIN, value);
+        }
+
+        public static string DatabasePath
+        {
+            get => ConfigurationManager.AppSettings[KEY_DB_PATH] ?? VALUE_DEFAULT;
+            set => writeSetting(KEY_DB_PATH, value);
         }
 
         private static bool writeSetting(string key, string value)

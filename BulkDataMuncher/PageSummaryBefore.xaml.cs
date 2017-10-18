@@ -51,5 +51,11 @@ namespace BulkDataMuncher
 
 
         }
+
+        private void btnGo_OnClick(object sender, RoutedEventArgs e)
+        {
+            PageTransfer pageTransfer = new PageTransfer(Case);
+            NavigationService.Navigate(pageTransfer);
+        }
     }
 }

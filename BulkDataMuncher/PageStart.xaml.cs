@@ -23,7 +23,6 @@ namespace BulkDataMuncher
         public PageStart()
         {
             InitializeComponent();
-            checkConfigPresent();
         }
 
         public CaseInfo Case { get; set; }
@@ -35,22 +34,22 @@ namespace BulkDataMuncher
                 if (MessageBox.Show("Configuratie niet aanwezig. Invullen voor gebruik", "Configuratie niet gevonden",
                         MessageBoxButton.OK, MessageBoxImage.Warning) == MessageBoxResult.OK)
                 {
-                    //BUG: NavigationService is not available here...
                     NavigationService.Navigate(new PageConfig());
                 }
 
             }
            }
 
-        private void BtnNew_OnClick(object sender, RoutedEventArgs e)
+        private void btnNew_OnClick(object sender, RoutedEventArgs e)
         {
             PageNewData pageNewData = new PageNewData();
             this.NavigationService.Navigate(pageNewData);
         }
 
-        private void BtnAdd_OnClick(object sender, RoutedEventArgs e)
+        private void btnModify_OnClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("test", "test", MessageBoxButton.OK);
+            PageModifyExisting pageModifyExisting = new PageModifyExisting();
+            this.NavigationService.Navigate(pageModifyExisting);
         }
 
 
@@ -58,6 +57,11 @@ namespace BulkDataMuncher
         {
             PageConfig pageConfig = new PageConfig();
             NavigationService.Navigate(pageConfig);
+        }
+
+        private void PageStart_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            checkConfigPresent();
         }
     }
 }

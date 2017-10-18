@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:BulkDataMuncher"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="PageTransfer">
+      Title="PageTransfer"
+      Loaded="PageTransfer_OnLoaded">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,11 +21,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" Content="Bestand"/>
-        <Label Grid.Column="1" Grid.Row="0" Content="&lt;FILENAME&gt;" Name="lblSource"/>
-        <Label Grid.Column="0" Grid.Row="1" Content="Bestemming" Name="lblDest"/>
-        <Label Grid.Column="1" Grid.Row="1" Content="&lt;BESTEMMING&gt;"/>
-        <ProgressBar Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Height="100" Name="pbProgress"/>
+        <Label Grid.Column="0" Grid.Row="0" Margin="10,10,10,10" Content="Bestand"/>
+        <Label Grid.Column="1" Grid.Row="0" Margin="10,10,10,10" Content="&lt;FILENAME&gt;" Name="lblSource"/>
+        <Label Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Content="Bestemming" Name="lblDest"/>
+        <Label Grid.Column="1" Grid.Row="1" Margin="10,10,10,10" Content="&lt;BESTEMMING&gt;"/>
+        <ProgressBar Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10,10,10,10" Height="50" Name="pbProgress"/>
         <Button Grid.Column="0" Grid.Row="3" Content="Annuleer" VerticalAlignment="Bottom" Name="bntCancel" Click="bntCancel_OnClick"/>
     </Grid>
 </Page>
