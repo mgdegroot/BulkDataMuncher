@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace BulkDataMuncher
 {
@@ -83,8 +84,16 @@ namespace BulkDataMuncher
 
         private void btnNext_OnClick(object sender, RoutedEventArgs e)
         {
-            PageSummaryBefore pageSummaryBefore = new PageSummaryBefore(Case);
-            this.NavigationService.Navigate(pageSummaryBefore);
+            if (Case.Files.Count == 0)
+            {
+                MessageBox.Show("Geen bestanden of directories geselecteerd", "Geen data", MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+            }
+            else
+            {
+                PageSummaryBefore pageSummaryBefore = new PageSummaryBefore(Case);
+                this.NavigationService.Navigate(pageSummaryBefore);
+            }
         }
     }
 }

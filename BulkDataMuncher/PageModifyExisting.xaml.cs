@@ -44,12 +44,58 @@ namespace BulkDataMuncher
 
         private void btnNext_OnClick(object sender, RoutedEventArgs e)
         {
-            Case.Number = txtZaaknummer.Text;
-            
-            // TODO: search case in database and fill
+            Case = new CaseInfo()
+            {
+                Number = txtZaaknummer.Text
+            };
 
-            PageSelectFiles pageSelectFiles = new PageSelectFiles(Case);
-            this.NavigationService.Navigate(pageSelectFiles);
+            bool caseDatabaseRowExists = CasesDB.Exists(Case.Number);
+            bool caseDirectoryExists = Util.DirectoryExistst(Case.CaseDirectory);
+
+            if (caseDirectoryExists && caseDatabaseRowExists)
+            {
+                Case = CasesDB.GetCase(Case.Number);
+                PageSelectFiles pageSelectFiles = new PageSelectFiles(Case);
+                this.NavigationService.Navigate(pageSelectFiles);
+            }
+            else if (caseDirectoryExists && !caseDatabaseRowExists)
+            {
+                MessageBox.Show("Zaak bestaat op opslag maar niet in database. Waarschuw beheerder",
+                    "Inconsistentie gedetecteerd", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            }
+            else if (caseDatabaseRowExists && !caseDirectoryExists)
+            {
+                MessageBox.Show("Zaak bestaat in database maar niet in opslag. Waarschuw beheerder",
+                    "Inconsistentie gedetecteerd", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            }
+            else
+            {
+                if (MessageBox.Show("Zaak niet gevonden. Nieuwe zaak toevoegen in plaats van bestaande wijzigen?",
+                        "Zaak niet gevonden", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    NavigationService.Navigate(new PageNewData());
+                }
+            }
+
+        }
+
+        private void btnFetchCase_OnClick(object sender, RoutedEventArgs e)
+        {
+            Case = new CaseInfo(isNew:false)
+            {
+                Number = txtZaaknummer.Text
+            };
+
+            if (CasesDB.Exists(Case.Number))
+            {
+                Case = CasesDB.GetCase(Case.Number);
+
+                txtZaaknaam.Text = Case.Name;
+                txtZaakEigenaar.Text = Case.Owner;
+                dpCase.DisplayDate = Case.Date;
+                dpCase.Text = Case.Date.ToString();
+            }
+
         }
     }
 }

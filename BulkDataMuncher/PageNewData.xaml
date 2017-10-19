@@ -20,14 +20,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" Content="Zaaknaam: " HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Top"/>
-        <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknaam" HorizontalAlignment="Stretch" Margin="10,10,10,10" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <Label Grid.Column="0" Grid.Row="1" Content="Nummer: " HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Top" />
-        <TextBox Grid.Column="1" Grid.Row="1" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknummer" HorizontalAlignment="Stretch" Margin="10,10,10,10" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <Label Grid.Column="0" Grid.Row="2" Content="Eigenaar: " HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Top" />
-        <TextBox Grid.Column="1" Grid.Row="2" Style="{StaticResource {x:Type TextBox}}" Name="txtZaakEigenaar" HorizontalAlignment="Stretch" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <Label Grid.Column="0" Grid.Row="3" Content="Datum: " HorizontalAlignment="Left" Margin="10,10,10,10" VerticalAlignment="Top" />
-        <DatePicker Grid.Column="1" Grid.Row="3" Name="dpCase" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Top"/>
+        <Label Grid.Column="0" Grid.Row="0" Content="Zaaknaam: " Margin="10,10,10,10" />
+        <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknaam" Margin="10,10,10,10" TextWrapping="Wrap"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="Nummer: " Margin="10,10,10,10"  />
+        <TextBox Grid.Column="1" Grid.Row="1" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknummer" Margin="10,10,10,10" TextWrapping="Wrap" />
+        <Label Grid.Column="0" Grid.Row="2" Content="Eigenaar: " Margin="10,10,10,10" />
+        <TextBox Grid.Column="1" Grid.Row="2" Style="{StaticResource {x:Type TextBox}}" Name="txtZaakEigenaar" Margin="10,10,10,0" TextWrapping="Wrap" />
+        <Label Grid.Column="0" Grid.Row="3" Content="Datum: " Margin="10,10,10,10" />
+        <DatePicker Grid.Column="1" Grid.Row="3" Name="dpCase" Margin="10,10,10,10"/>
         <Button Grid.Column="1" Grid.Row="4" Name="btnNext" Content="Volgende..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick"/>
     </Grid>
 </Page>

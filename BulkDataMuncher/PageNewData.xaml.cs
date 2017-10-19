@@ -30,23 +30,36 @@ namespace BulkDataMuncher
 
         private void btnNext_OnClick(object sender, RoutedEventArgs e)
         {
-            Case = fetchInfo();
+            Case = fetchAndValidateInput();
             if (Case != null)
             {
-                if (Util.DirectoryExistst(Case.CaseDirectory))
+                bool caseDatabaseRowExists = CasesDB.Exists(Case.Number);
+                bool caseDirectoryExists = Util.DirectoryExistst(Case.CaseDirectory);
+                if (caseDirectoryExists || caseDatabaseRowExists)
                 {
-                    if (MessageBox.Show($"Zaak met nummer {Case.Number} bestaat al.\r\nToevoegen aan bestaande zaak?",
-                            "Zaaknummer bestaat al",
-                            MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                    // Verify consistency -->
+                    if (caseDirectoryExists && !caseDatabaseRowExists)
                     {
-                        NavigationService.Navigate(new PageModifyExisting(){CaseNumber = Case.Number});
+                        MessageBox.Show("Zaak bestaat op opslag maar niet in database. Waarschuw beheerder",
+                            "Inconsistentie gedetecteerd", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    }
+                    else if (caseDatabaseRowExists && !caseDirectoryExists)
+                    {
+                        MessageBox.Show("Zaak bestaat in database maar niet in opslag. Waarschuw beheerder",
+                            "Inconsistentie gedetecteerd", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    }
+                    else if (MessageBox.Show($"Zaak met nummer {Case.Number} bestaat al.\r\nToevoegen aan bestaande zaak?",
+                            "Zaaknummer bestaat al",
+                            MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        NavigationService.Navigate(new PageModifyExisting() {CaseNumber = Case.Number});
                     }
                 }
-
-                CasesDB.AddCase(Case);
-
-                PageSelectFiles pageSelectFiles = new PageSelectFiles(this.Case);
-                this.NavigationService.Navigate(pageSelectFiles);
+                else
+                {
+                    PageSelectFiles pageSelectFiles = new PageSelectFiles(this.Case);
+                    this.NavigationService.Navigate(pageSelectFiles);
+                }
             }
         }
 
@@ -56,31 +69,56 @@ namespace BulkDataMuncher
 
             if (dpCase.SelectedDate == null)
             {
-                retVal = "DPCASEDATE";
+                retVal += "DPCASEDATE" + "|";
+            }
+            if (string.IsNullOrEmpty(txtZaaknummer.Text))
+            {
+                retVal += "TXTZAAKNUMMER" + "|";
+            }
+            if (string.IsNullOrEmpty(txtZaaknaam.Text))
+            {
+                retVal += "TXTZAAKNAAM" + "|";
+            }
+            if (string.IsNullOrEmpty(txtZaakEigenaar.Text))
+            {
+                retVal += "TXTZAAKEIGENAAR" + "|";
             }
 
             return retVal;
         }
 
-        CaseInfo fetchInfo()
+        CaseInfo fetchAndValidateInput()
         {
             CaseInfo result = null;
             string validateResult = validate();
 
             if (validateResult != string.Empty)
             {
+                string[] errors = validateResult.Split('|');
                 string errMessage = string.Empty;
-
-                switch (validateResult)
+                foreach (var error in errors)
                 {
-                    case "":
-                        break;
-                    case "DPCASEDATE":
-                        errMessage = "Kies een datum";
-                        break;
+                    switch (error)
+                    {
+                        case "":
+                            break;
+                        case "DPCASEDATE":
+                            errMessage += "Kies een datum\r\n";
+                            break;
+                        case "TXTZAAKNUMMER":
+                            errMessage += "Vul zaaknummer in\r\n";
+                            break;
+                        case "TXTZAAKNAAM":
+                            errMessage += "Vul zaaknaam in\r\n";
+                            break;
+                        case "TXTZAAKEIGENAAR":
+                            errMessage += "Vul zaak eigenaar in\r\n";
+                            break;
+                    }
                 }
 
-                MessageBox.Show(errMessage, "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                MessageBox.Show(errMessage, "Corrigeer Fout(en)", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {

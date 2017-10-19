@@ -11,9 +11,10 @@ namespace BulkDataMuncher
 {
     public class CaseInfo
     {
-        public CaseInfo()
+        public CaseInfo(bool isNew=true)
         {
             Files = new ObservableCollection<FileSelection>();
+            IsNew = isNew;
         }
         public string Name { get; set; }
         public string Number { get; set; }
@@ -21,5 +22,6 @@ namespace BulkDataMuncher
         public DateTime Date { get; set; }
         public ObservableCollection<FileSelection> Files { get; set; }
         public string CaseDirectory => Path.Combine(ConfigHandler.DestinationBase, this.Number);
+        public bool IsNew { get; set; }
     }
 }

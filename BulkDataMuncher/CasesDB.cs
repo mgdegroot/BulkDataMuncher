@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -11,96 +12,126 @@ namespace BulkDataMuncher
     public static class CasesDB
     {
         private const string TABLE_CASE = "datamuncher_cases";
-
-        static CasesDB()
-        {
-            if (File.Exists(ConfigHandler.DatabasePath))
-            {
-                Connection = new SQLiteConnection($"Data Source={ConfigHandler.DatabasePath};Version=3;");
-            }
-        }
+        private const string DATE_FORMAT = "yyyy-MM-dd";
+        private const string DB_ALIAS = "CasesDB";
 
         public static void CreateDatabase()
         {
             SQLiteConnection.CreateFile(ConfigHandler.DatabasePath);
 
-            Connection = new SQLiteConnection($"Data Source={ConfigHandler.DatabasePath};Version=3;");
-
-            Open();
-            string qryCreatetable = $"CREATE TABLE {TABLE_CASE} (Number VARCHAR(30), Name VARCHAR(255), Owner VARCHAR(255), Date VARCHAR(50))";
-
-            SQLiteCommand command = new SQLiteCommand(qryCreatetable, Connection);
-
-            command.ExecuteNonQuery();
-            Close();
-        }
-
-        public static bool Open()
-        {
-            if (Connection == null)
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
-                Connection = new SQLiteConnection($"Data Source={ConfigHandler.DatabasePath};Version=3;");
-            }
-            Connection.Open();
+                connection.Open();
+                string qryCreatetable = $"CREATE TABLE {TABLE_CASE} (Number VARCHAR(30), Name VARCHAR(255), Owner VARCHAR(255), Date VARCHAR(50))";
 
-            return true;
+                SQLiteCommand command = new SQLiteCommand(qryCreatetable, connection);
+
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+
         }
 
-        public static bool Close()
+        public static bool Exists(string caseNumber)
         {
-            Connection?.Close();
+            var caseExists = false;
+            string qry = $"SELECT 1 FROM {TABLE_CASE} WHERE Number = '{caseNumber}'";
 
-            return true;
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SQLiteCommand command = new SQLiteCommand(qry, connection);
+                SQLiteDataReader reader = command.ExecuteReader();
+
+                caseExists = reader.Read();
+                reader.Close();
+                connection.Close();
+            }
+            return caseExists;
         }
 
         public static void AddCase(CaseInfo theCase)
         {
-            Open();
-            string qry = $"INSERT INTO {TABLE_CASE}(Number, Name, Owner, Date) VALUES('{theCase.Number}','{theCase.Name}', '{theCase.Owner}', '{theCase.Date:YYYY-mm-DD}')";
-            SQLiteCommand command = new SQLiteCommand(qry, Connection);
+            string qry = $"INSERT INTO {TABLE_CASE}(Number, Name, Owner, Date) VALUES('{theCase.Number}','{theCase.Name}', '{theCase.Owner}', '{theCase.Date.ToString(DATE_FORMAT)}')";
 
-            command.ExecuteNonQuery();
-            Close();
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SQLiteCommand command = new SQLiteCommand(qry, connection);
+
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
         }
 
         public static void ModifyCase(CaseInfo theCase)
         {
-            Open();
+            
             string qry =
-                $"UPDATE {TABLE_CASE} SET Number = '{theCase.Number}', Name='{theCase.Name}', Owner='{theCase.Owner}', Date='{theCase.Date:YYYY-mm-DD}'";
-            SQLiteCommand command = new SQLiteCommand(qry, Connection);
+                $"UPDATE {TABLE_CASE} SET Number = '{theCase.Number}', Name='{theCase.Name}', Owner='{theCase.Owner}', Date='{theCase.Date:DATE_FORMAT}'";
 
-            command.ExecuteNonQuery();
-            Close();
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(qry, connection);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
         }
 
         public static CaseInfo GetCase(string caseNumber)
         {
-            Open();
-            string qry = $"SELECT Number, Name, Owner, Data FROM {TABLE_CASE} WHERE Number = {caseNumber}";
-            SQLiteCommand command = new SQLiteCommand(qry, Connection);
-
-            SQLiteDataReader reader = command.ExecuteReader();
+            string qry = $"SELECT Number, Name, Owner, Date FROM {TABLE_CASE} WHERE Number = {caseNumber}";
             CaseInfo retVal;
-            if (reader.Read())
+            
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
-                retVal = new CaseInfo()
-                {
-                    Number = reader["Number"] as string,
-                    Name = reader["Name"] as string,
-                    Owner = reader["Owner"] as string,
-                    Date = DateTime.Parse(reader["Date"] as string),
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(qry, connection);
 
-                };
+                SQLiteDataReader reader = command.ExecuteReader();
+                
+                if (reader.Read())
+                {
+                    retVal = new CaseInfo()
+                    {
+                        Number = reader["Number"] as string,
+                        Name = reader["Name"] as string,
+                        Owner = reader["Owner"] as string,
+                        Date = DateTime.Parse(reader["Date"] as string),
+
+                    };
+                }
+                else
+                {
+                    retVal = null;
+                }
+                reader.Close();
+                connection.Close();
             }
-            else
-            {
-                retVal = null;
-            }
-            Close();
+
             return retVal;
         }
 
-        public static SQLiteConnection Connection { get; private set; }
+        //private static void AttachDB(string fileDB, string aliasName, SQLiteConnection cn)
+        //{
+        //    string sqlText = string.Format("ATTACH '{0}' AS {1}", fileDB, aliasName);
+        //    SQLiteCommand cmd = new SQLiteCommand(sqlText, cn);
+        //    cmd.ExecuteNonQuery();
+        //    /*
+        //     using(SQLiteConnection cn = new SQLiteConnection(GetConnectionString()))
+        //    {
+        //        AttachDB(@"C:\SQLite\UserData.sqlite3", "UserData", cn);
+        //        // logic ....
+        //    } 
+        //     */
+        //}
+
+
+        private static string ConnectionString =>
+            $"Data Source={ConfigHandler.DatabasePath};Version=3;Pooling=True;Max Pool Size=100;";
     }
 }

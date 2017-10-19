@@ -12,13 +12,35 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" Content="Nummer: " HorizontalAlignment="Left" Margin="10,10,10,10" />
+        <Label Grid.Column="0" Grid.Row="0" Content="Nummer: " Margin="10,10,10,10" />
         <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknummer" Margin="10,10,10,10"/>
-        <Button Grid.Column="1" Grid.Row="1" Name="btnNext" Content="Volgende ..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick"/>
+        <Button Grid.Column="2" Grid.Row="0" Name="btnFetchCase" Margin="10,10,10,10" Content="Ophalen" Click="btnFetchCase_OnClick" />
+
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" IsEnabled="False">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Zaaknaam: " Margin="10,10,10,10" />
+            <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknaam" Margin="10,10,10,10" TextWrapping="Wrap" />
+            <Label Grid.Column="0" Grid.Row="2" Content="Eigenaar: " Margin="10,10,10,10" />
+            <TextBox Grid.Column="1" Grid.Row="2" Style="{StaticResource {x:Type TextBox}}" Name="txtZaakEigenaar" Margin="10,10,10,10" TextWrapping="Wrap" />
+            <Label Grid.Column="0" Grid.Row="3" Content="Datum: " Margin="10,10,10,10" />
+            <DatePicker Grid.Column="1" Grid.Row="3" Name="dpCase" Margin="10,10,10,10" />
+        </Grid>
+        <Button Grid.Column="2" Grid.Row="2" Name="btnNext" Content="Volgende ..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick"/>
     </Grid>
 </Page>

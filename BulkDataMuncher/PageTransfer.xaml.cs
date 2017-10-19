@@ -53,12 +53,20 @@ namespace BulkDataMuncher
 
         private void PageTransfer_OnLoaded(object sender, RoutedEventArgs e)
         {
+            // Add case to database -->
+            if (Case.IsNew)
+            {
+                CasesDB.AddCase(Case);
+            }
+            else
+            {
+                CasesDB.ModifyCase(Case);
+            }
+
             if (!bgWorker.IsBusy)
             {
                 bgWorker.RunWorkerAsync(this.Case);
-                //bgWorker.
             }
-            //doTransfer();
         }
 
 
@@ -96,7 +104,7 @@ namespace BulkDataMuncher
                 }
                 currCnt++;
                 worker.ReportProgress(progressTick * currCnt);
-                System.Threading.Thread.Sleep(2000);
+                //System.Threading.Thread.Sleep(2000);
             }
         }
 
@@ -117,10 +125,12 @@ namespace BulkDataMuncher
             }
             else
             {
-                MessageBox.Show("Completed", "Completed", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (MessageBox.Show("Completed", "Completed", MessageBoxButton.OK, MessageBoxImage.Information) ==
+                    MessageBoxResult.OK)
+                {
+                    NavigationService.Navigate(new PageStart());
+                }
             }
         }
-
-
     }
 }
