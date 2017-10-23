@@ -3,10 +3,11 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:BulkDataMuncher"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="PageNewData">
+      Title="PageNewData" Loaded="Page_Loaded">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -25,9 +26,9 @@
         <Label Grid.Column="0" Grid.Row="1" Content="Nummer: " Margin="10,10,10,10"  />
         <TextBox Grid.Column="1" Grid.Row="1" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknummer" Margin="10,10,10,10" TextWrapping="Wrap" />
         <Label Grid.Column="0" Grid.Row="2" Content="Eigenaar: " Margin="10,10,10,10" />
-        <TextBox Grid.Column="1" Grid.Row="2" Style="{StaticResource {x:Type TextBox}}" Name="txtZaakEigenaar" Margin="10,10,10,0" TextWrapping="Wrap" />
+        <TextBox Grid.Column="1" Grid.Row="2" Style="{StaticResource {x:Type TextBox}}" Name="txtZaakEigenaar" Margin="10,10,10,10" TextWrapping="Wrap" />
         <Label Grid.Column="0" Grid.Row="3" Content="Datum: " Margin="10,10,10,10" />
-        <DatePicker Grid.Column="1" Grid.Row="3" Name="dpCase" Margin="10,10,10,10"/>
-        <Button Grid.Column="1" Grid.Row="4" Name="btnNext" Content="Volgende..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick"/>
+        <DatePicker Grid.Column="1" Grid.Row="3" SelectedDate="{x:Static sys:DateTime.Now}" DisplayDateStart="{x:Static sys:DateTime.Now}" Name="dpCase" Margin="10,10,10,10" />
+        <Button Grid.Column="1" Grid.Row="4" Name="btnNxt" Background="{StaticResource brushNext}" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick"/>
     </Grid>
 </Page>

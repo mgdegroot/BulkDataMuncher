@@ -118,7 +118,43 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cookiemonster_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\cookiemonster_empty.mp4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Img_Inspector_Gadget_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Img_Inspector_Gadget_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgCalimero" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgCalimero.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgControlPanel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgControlPanel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgCreate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgCreate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgFolder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgFolder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgInspectorGadget" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgInspectorGadget.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgPlusPerson" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgPlusPerson.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgStart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgStart.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgStop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgStop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgNoOverwrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgNoOverwrite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="imgOverwrite" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imgOverwrite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

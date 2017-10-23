@@ -8,6 +8,8 @@
       d:DesignHeight="300" d:DesignWidth="300"
       Title="Start"
       Loaded="PageStart_OnLoaded">
+    <Page.Resources>
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -19,9 +21,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Grid.Column="0" Grid.Row="0" Content="Nieuw..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="btnNew_OnClick"/>
-        <Button Grid.Column="0" Grid.Row="1" Content="Toevoegen..." HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnModify" Click="btnModify_OnClick"/>
-        <Button Grid.Column="0" Grid.Row="2" Content="Config..." HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="75" Name="btnConfig" Click="btnConfig_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="btnNew_OnClick">
+            <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgPlusPerson}"/>
+        </Button>
+        <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnModify" Click="btnModify_OnClick">
+            <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgFolder}"/>
+        </Button>
+        <Button Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="75" Name="btnConfig" Click="btnConfig_OnClick">
+            <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgControlPanel}"/>
+        </Button>
         <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" >
             <ScrollViewer.Style>
                 <Style TargetType="{x:Type ScrollViewer}">
@@ -37,6 +45,5 @@
             </ScrollViewer.Style>
             <Image Source="Resources/Img_Inspector_Gadget_1.png" UseLayoutRounding="False" Margin="10,10,10,10"/>
         </ScrollViewer>
-
     </Grid>
 </Page>

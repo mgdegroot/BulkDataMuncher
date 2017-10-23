@@ -26,6 +26,13 @@ namespace BulkDataMuncher
     {
         private BackgroundWorker bgWorker = new BackgroundWorker();
 
+        class ProgressInfo
+        {
+            public string CurrentFileSrc { get; set; }
+            public string CurrentFileDst { get; set; }
+            public int PercentageDone { get; set; }
+        }
+
         public PageTransfer(CaseInfo theCase)
         {
             InitializeComponent();
@@ -67,6 +74,7 @@ namespace BulkDataMuncher
             {
                 bgWorker.RunWorkerAsync(this.Case);
             }
+            myMediaElement.Play();
         }
 
 
@@ -81,40 +89,48 @@ namespace BulkDataMuncher
 
             Util.CreateDirectory(workerCase.CaseDirectory);
 
+            ProgressInfo pi = new ProgressInfo();
             
-            foreach (FileSelection fileSelection in workerCase.Files)
+            foreach (Util.FileSelection fileSelection in workerCase.Files)
             {
                 if (worker.CancellationPending)
                 {
                     e.Cancel = true;
                     break;
                 }
-
-                //lblSource.Content = Path.GetFileName(fileSelection.Path);
-                //lblDest.Content = Path.Combine(Case.CaseDirectory, fileSelection.Path);
+                pi.CurrentFileSrc = fileSelection.Path;
+                pi.CurrentFileDst = Case.CaseDirectory;
+                pi.PercentageDone = progressTick * currCnt;
+                worker.ReportProgress(pi.PercentageDone, pi);
 
                 switch (fileSelection.Type)
                 {
-                    case FileSelectionType.DIRECTORY:
-                        Util.DirectoryCopy(fileSelection.Path, Case.CaseDirectory, recursive: true, overwrite: false);
+                    case Util.FileSelectionType.DIRECTORY:
+                        Util.DirectoryCopy(fileSelection.Path, Case.CaseDirectory, recursive: true, overwrite: Case.OverwriteExistingFiles);
                         break;
-                    case FileSelectionType.FILE:
-                        Util.FileCopy(fileSelection.Path, Case.CaseDirectory, overwrite: false);
+                    case Util.FileSelectionType.FILE:
+                        Util.FileCopy(fileSelection.Path, Case.CaseDirectory, overwrite: Case.OverwriteExistingFiles);
                         break;
                 }
+                fileSelection.State = Util.FileState.TRANSFERRED;
                 currCnt++;
-                worker.ReportProgress(progressTick * currCnt);
-                //System.Threading.Thread.Sleep(2000);
+                pi.PercentageDone = progressTick * currCnt;
+                worker.ReportProgress(pi.PercentageDone, pi);
+                System.Threading.Thread.Sleep(2000);
             }
         }
 
         private void transfer_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             pbProgress.Value = e.ProgressPercentage;
+            ProgressInfo pi = (ProgressInfo) e.UserState;
+            lblSource.Content = pi.CurrentFileSrc;
+            lblDest.Content = pi.CurrentFileDst;
         }
 
         private void transfer_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
+            CasesDB.AddTransferedFilesToCaseDB(Case);
             if (e.Cancelled)
             {
                 MessageBox.Show("Cancelled", "Cancelled", MessageBoxButton.OK);
@@ -131,6 +147,9 @@ namespace BulkDataMuncher
                     NavigationService.Navigate(new PageStart());
                 }
             }
+
+            
         }
+
     }
 }

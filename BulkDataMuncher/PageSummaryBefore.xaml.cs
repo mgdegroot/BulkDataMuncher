@@ -39,21 +39,29 @@ namespace BulkDataMuncher
             txtZaaknummer.Text = Case.Number;
             txtEigenaar.Text = Case.Owner;
             txtDatum.Text = Case.Date.ToString("yyyy-MM-dd");
+            txtOverwriteExisting.Text = Case.OverwriteExistingFiles ? "JA" : "NEE";
 
-            //string destDir =
-//            string destDir = System.IO.Path.Combine(ConfigHandler.DestinationBase, Case.Number);
             txtDest.Text = Case.CaseDirectory;
 
-            txtZaaknaam.IsEnabled = false;
-            txtZaaknummer.IsEnabled = false;
-            txtEigenaar.IsEnabled = false;
-            txtDatum.IsEnabled = false;
+            //txtZaaknaam.IsEnabled = false;
+            //txtZaaknummer.IsEnabled = false;
+            //txtEigenaar.IsEnabled = false;
+            //txtDatum.IsEnabled = false;
 
 
         }
 
         private void btnGo_OnClick(object sender, RoutedEventArgs e)
         {
+            if (Case.OverwriteExistingFiles)
+            {
+                if (MessageBox.Show("Bestaande bestanden worden overschreven.\r\nZeker weten?",
+                        "Bestaande overschrijven", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) ==
+                    MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
             PageTransfer pageTransfer = new PageTransfer(Case);
             NavigationService.Navigate(pageTransfer);
         }

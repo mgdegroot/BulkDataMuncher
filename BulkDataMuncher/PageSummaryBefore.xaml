@@ -20,12 +20,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="10,10,10,10" Content="Samenvatting"></Label>
-        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" IsEnabled="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -42,6 +43,8 @@
             <TextBox Grid.Column="1" Grid.Row="3" Text="Datum" Name="txtDatum"/>
             <Label Grid.Column="0" Grid.Row="4"  Content="Bestemming"/>
             <TextBox Grid.Column="1" Grid.Row="4" Text="&lt;DEST&gt;" Name="txtDest"/>
+            <Label Grid.Column="0" Grid.Row="5"  Content="Overschrijven"/>
+            <TextBox Grid.Column="1" Grid.Row="5" Text="&lt;DEST&gt;" Name="txtOverwriteExisting"/>
         </Grid>
         <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Stretch" Name="dgSelectedFiles"/>
         <Button Grid.Column="1" Grid.Row="3" Name="btnGo" Content="Go" Margin="10,10,10,10" Click="btnGo_OnClick"/>

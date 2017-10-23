@@ -10,12 +10,13 @@ namespace BulkDataMuncher
 {
     public static class ConfigHandler
     {
+        public const string KEY_ENABLE_WEIRDO = "ENABLE_WEIRDO";
         public const string KEY_DOMAIN = "DOMAIN";
         public const string KEY_USERNAME = "USERNAME";
         public const string KEY_PASSWORD = "PASSWORD";
         public const string KEY_DESTINATIONBASE = "DESTINATIONBASE";
         public const string KEY_DB_PATH = "DB_PATH";
-        public const string VALUE_DEFAULT = "<NOT FOUND>";
+        public const string VALUE_DEFAULT = "";
         
         public static string Username
         {
@@ -47,8 +48,18 @@ namespace BulkDataMuncher
 
         public static string DatabasePath
         {
-            get => ConfigurationManager.AppSettings[KEY_DB_PATH] ?? VALUE_DEFAULT;
+            get
+            {
+                string test = ConfigurationManager.AppSettings[KEY_DB_PATH];
+                return ConfigurationManager.AppSettings[KEY_DB_PATH] ?? VALUE_DEFAULT;
+            }
             set => writeSetting(KEY_DB_PATH, value);
+        }
+
+        public static bool EnableWeirdo
+        {
+            get => Convert.ToBoolean(ConfigurationManager.AppSettings[KEY_ENABLE_WEIRDO] ?? "True");
+            set => writeSetting(KEY_ENABLE_WEIRDO, Convert.ToString(value));
         }
 
         private static bool writeSetting(string key, string value)

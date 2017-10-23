@@ -14,20 +14,40 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BulkDataMuncher
 {
+
+
     public class Util
     {
+        public enum FileSelectionType
+        {
+            FILE = 0,
+            DIRECTORY = 1,
+        }
+
+        public enum FileState
+        {
+            PENDING = 0,
+            TRANSFERRED = 1,
+            // TODO: more states
+
+        }
+        public class FileSelection
+        {
+            public FileSelection()
+            {
+                State = FileState.PENDING;
+            }
+
+            public FileSelectionType Type { get; set; }
+            public FileState State { get; set; }
+            public string Path { get; set; }
+        }
 
         public static bool DirectoryExistst(string path)
         {
             if (ConfigHandler.UsernameSet)
             {
-                // TODO: ImpersonationHelper does not yet support return values -->
-                //ImpersonationHelper.Impersonate(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password,
-                //    delegate
-                //    {
-                //        return directoryExists(path);
-                //    });
-                return false;
+                return directoryExistsAsUser(path);
             }
             else
             {
@@ -35,10 +55,6 @@ namespace BulkDataMuncher
             }
         }
 
-        private static bool directoryExists(string path)
-        {
-            return Directory.Exists(path);
-        }
 
         public static void CreateDirectory(string path)
         {
@@ -75,6 +91,19 @@ namespace BulkDataMuncher
                 directoryCopy(srcDir, dstDir, recursive, overwrite);
             }
         }
+
+        private static bool directoryExistsAsUser(string path)
+        {
+            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password,
+                () => directoryExists(path));
+        }
+
+
+        private static bool directoryExists(string path)
+        {
+            return Directory.Exists(path);
+        }
+
 
         private static void createDirectoryAsUser(string path)
         {
@@ -245,70 +274,64 @@ namespace BulkDataMuncher
             }
             catch (Exception ex)
             {
-                //Facade.Instance.Trace("Oh no! Impersonate method failed.");
+                //Facade.Instance.Trace("Oh oh! Impersonate method failed.");
                 //ex.HandleException();
-                //On purpose: we want to notify a caller about the issue /Pavel Kovalev 9/16/2016 2:15:23 PM)/
+                //Notify a caller about the issue
                 throw;
             }
         }
 
-        //[PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        //public static bool ImpersonateWithBoolRet(string domainName, string userName, string userPassword, Action actionToExecute)
-        //{
-        //    SafeTokenHandle safeTokenHandle;
-        //    bool retResultValue = false;
-        //    try
-        //    {
+        /// <summary>
+        /// TODO: generic return type iso fixed bool return.
+        /// </summary>
+        /// <param name="domainName"></param>
+        /// <param name="userName"></param>
+        /// <param name="userPassword"></param>
+        /// <param name="actionToExecute"></param>
+        /// <returns></returns>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+        public static bool ImpersonateWithBoolRet(string domainName, string userName, string userPassword, Func<bool> actionToExecute)
+        {
+            SafeTokenHandle safeTokenHandle;
+            bool retResultValue = false;
+            try
+            {
 
-        //        const int LOGON32_PROVIDER_DEFAULT = 0;
-        //        //This parameter causes LogonUser to create a primary token.
-        //        const int LOGON32_LOGON_INTERACTIVE = 2;
+                const int LOGON32_PROVIDER_DEFAULT = 0;
+                const int LOGON32_LOGON_INTERACTIVE = 2;
 
-        //        // Call LogonUser to obtain a handle to an access token.
-        //        bool returnValue = LogonUser(userName, domainName, userPassword,
-        //            LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT,
-        //            out safeTokenHandle);
-        //        //Facade.Instance.Trace("LogonUser called.");
+                bool returnValue = LogonUser(userName, domainName, userPassword,
+                    LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT,
+                    out safeTokenHandle);
 
-        //        if (returnValue == false)
-        //        {
-        //            int ret = Marshal.GetLastWin32Error();
-        //            //Facade.Instance.Trace($"LogonUser failed with error code : {ret}");
+                if (returnValue == false)
+                {
+                    int ret = Marshal.GetLastWin32Error();
 
-        //            throw new System.ComponentModel.Win32Exception(ret);
-        //        }
+                    throw new System.ComponentModel.Win32Exception(ret);
+                }
 
-        //        using (safeTokenHandle)
-        //        {
-        //            //Facade.Instance.Trace($"Value of Windows NT token: {safeTokenHandle}");
-        //            //Facade.Instance.Trace($"Before impersonation: {WindowsIdentity.GetCurrent().Name}");
+                using (safeTokenHandle)
+                {
+                    using (WindowsIdentity newId = new WindowsIdentity(safeTokenHandle.DangerousGetHandle()))
+                    {
+                        using (WindowsImpersonationContext impersonatedUser = newId.Impersonate())
+                        {
+                            retResultValue = actionToExecute();
+                        }
+                    }
+                }
 
-        //            // Use the token handle returned by LogonUser.
-        //            using (WindowsIdentity newId = new WindowsIdentity(safeTokenHandle.DangerousGetHandle()))
-        //            {
-        //                using (WindowsImpersonationContext impersonatedUser = newId.Impersonate())
-        //                {
-        //                    //Facade.Instance.Trace($"After impersonation: {WindowsIdentity.GetCurrent().Name}");
-        //                    //Facade.Instance.Trace("Start executing an action");
+            }
+            catch (Exception ex)
+            {
+                //Facade.Instance.Trace("Oh oh! Impersonate method failed.");
+                //ex.HandleException();
+                //Notify a caller about the issue
+                throw;
+            }
 
-        //                    retResultValue = actionToExecute();
-
-        //                    //Facade.Instance.Trace("Finished executing an action");
-        //                }
-        //            }
-        //            //Facade.Instance.Trace($"After closing the context: {WindowsIdentity.GetCurrent().Name}");
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Facade.Instance.Trace("Oh no! Impersonate method failed.");
-        //        //ex.HandleException();
-        //        //On purpose: we want to notify a caller about the issue /Pavel Kovalev 9/16/2016 2:15:23 PM)/
-        //        throw;
-        //    }
-
-        //    return retResultValue;
-        //}
+            return retResultValue;
+        }
     }
 }

@@ -94,8 +94,15 @@ namespace BulkDataMuncher
                 txtZaakEigenaar.Text = Case.Owner;
                 dpCase.DisplayDate = Case.Date;
                 dpCase.Text = Case.Date.ToString();
+
+                btnNext.IsEnabled = true;
             }
 
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(txtZaaknummer);
         }
     }
 }

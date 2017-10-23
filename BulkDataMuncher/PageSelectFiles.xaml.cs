@@ -23,7 +23,7 @@ namespace BulkDataMuncher
     /// </summary>
     public partial class PageSelectFiles : Page, IBasePage
     {
-        private ObservableCollection<FileSelection> fileSelection = new ObservableCollection<FileSelection>();
+        private ObservableCollection<Util.FileSelection> fileSelection = new ObservableCollection<Util.FileSelection>();
 
 
         public PageSelectFiles(CaseInfo theCase)
@@ -58,9 +58,9 @@ namespace BulkDataMuncher
             {
                 foreach (var filename in ofd.FileNames)
                 {
-                    Case.Files.Add(new FileSelection()
+                    Case.Files.Add(new Util.FileSelection()
                     {
-                        Type=FileSelectionType.FILE,
+                        Type=Util.FileSelectionType.FILE,
                         Path=filename,
                     });
                 }
@@ -74,9 +74,9 @@ namespace BulkDataMuncher
 
             if (fbd.ShowDialog() == DialogResult.OK)
             {
-                Case.Files.Add(new FileSelection()
+                Case.Files.Add(new Util.FileSelection()
                 {
-                    Type=FileSelectionType.DIRECTORY,
+                    Type=Util.FileSelectionType.DIRECTORY,
                     Path=fbd.SelectedPath,
                 });
             }
@@ -94,6 +94,26 @@ namespace BulkDataMuncher
                 PageSummaryBefore pageSummaryBefore = new PageSummaryBefore(Case);
                 this.NavigationService.Navigate(pageSummaryBefore);
             }
+        }
+
+        private void btnOverwriteExisting_OnChecked(object sender, RoutedEventArgs e)
+        {
+            var r = this.FindResource("ImgOverwrite");
+            Case.OverwriteExistingFiles = true;
+            btnOverwriteExisting.Background = (ImageBrush) r;
+            //tbOverwriteText.Text = "Wel\r\nOverschrijven";
+            //btnOverwriteExisting.Content = "Wel overschrijven";
+
+        }
+
+        private void btnOverwriteExisting_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            var r = this.FindResource("ImgNoOverwrite");
+            Case.OverwriteExistingFiles = false;
+            btnOverwriteExisting.Background = (ImageBrush) r;
+
+            //tbOverwriteText.Text = "Niet\r\nOverschrijven";
+            //btnOverwriteExisting.Content = "Niet overschrijven";
         }
     }
 }

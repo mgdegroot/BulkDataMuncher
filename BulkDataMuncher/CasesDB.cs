@@ -12,7 +12,9 @@ namespace BulkDataMuncher
     public static class CasesDB
     {
         private const string TABLE_CASE = "datamuncher_cases";
+        private const string TABLE_CASE_CONTENT = "datamunchar_content";
         private const string DATE_FORMAT = "yyyy-MM-dd";
+        private const string DATETIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
         private const string DB_ALIAS = "CasesDB";
 
         public static void CreateDatabase()
@@ -22,11 +24,16 @@ namespace BulkDataMuncher
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Open();
-                string qryCreatetable = $"CREATE TABLE {TABLE_CASE} (Number VARCHAR(30), Name VARCHAR(255), Owner VARCHAR(255), Date VARCHAR(50))";
+                string qryCreateTableCase = $"CREATE TABLE {TABLE_CASE} (Number VARCHAR(30), Name VARCHAR(255), Owner VARCHAR(255), Date VARCHAR(50))";
+                string qryCreateTableCaseContent = $"CREATE TABLE {TABLE_CASE_CONTENT} (CaseNumber VARCHAR(30), Path VARCHAR(255), FileType VARCHAR(4), ArchiveDate VARCHAR(50))";
 
-                SQLiteCommand command = new SQLiteCommand(qryCreatetable, connection);
 
+                SQLiteCommand command = new SQLiteCommand(qryCreateTableCase, connection);
+                
                 command.ExecuteNonQuery();
+                command = new SQLiteCommand(qryCreateTableCaseContent, connection);
+                command.ExecuteNonQuery();
+
                 connection.Close();
             }
 
@@ -80,6 +87,32 @@ namespace BulkDataMuncher
                 command.ExecuteNonQuery();
                 connection.Close();
             }
+        }
+
+        public static void AddFileToCaseDB(Util.FileSelection fileSelection, CaseInfo theCase)
+        {
+            string qry = $"INSERT OR REPLACE INTO {TABLE_CASE_CONTENT}(CaseNumber, Path, FileType, ArchiveDate) VALUES('{theCase.Number}', '{fileSelection.Path}', '{fileSelection.Type}', '{DateTime.Now.ToString(DATETIME_FORMAT)}')";
+
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(qry, connection);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+
+        public static void AddTransferedFilesToCaseDB(CaseInfo theCase)
+        {
+            foreach (var fileSelection in theCase.Files)
+            {
+                if (fileSelection.State == Util.FileState.TRANSFERRED)
+                {
+                    AddFileToCaseDB(fileSelection, theCase);
+                }
+            }
+            
         }
 
         public static CaseInfo GetCase(string caseNumber)

@@ -130,5 +130,10 @@ namespace BulkDataMuncher
             }
             return result;
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(txtZaaknaam);
+        }
     }
 }
