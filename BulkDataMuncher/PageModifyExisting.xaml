@@ -22,7 +22,9 @@
         <Label Grid.Column="0" Grid.Row="0" Content="Nummer: " Margin="10,10,10,10" />
         <!--<TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource {x:Type TextBox}}" Name="txtZaaknummer" Margin="10,10,10,10"/>-->
         <TextBox Grid.Column="1" Grid.Row="0" Name="txtZaaknummer" Margin="10,10,10,10"/>
-        <Button Grid.Column="2" Grid.Row="0" Name="btnFetchCase" HorizontalAlignment="Left" Width="35" Margin="10,10,10,10" Background="{StaticResource brushRefresh}" Click="btnFetchCase_OnClick" />
+        <Button Grid.Column="2" Grid.Row="0" Name="btnFetchCase" HorizontalAlignment="Left" Width="35" Margin="10,10,10,10" Click="btnFetchCase_OnClick" >
+            <Rectangle Width="35" Height="25" Fill="{StaticResource ImgRefresh}"/>
+        </Button>
 
         <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" IsEnabled="False">
             <Grid.ColumnDefinitions>
@@ -42,6 +44,8 @@
             <Label Grid.Column="0" Grid.Row="3" Content="Datum: " Margin="10,10,10,10" />
             <DatePicker Grid.Column="1" Grid.Row="3" Name="dpCase" Margin="10,10,10,10" />
         </Grid>
-        <Button Grid.Column="2" Grid.Row="2" Name="btnNext" Background="{StaticResource brushNext}" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick" IsEnabled="False"/>
+        <Button Grid.Column="2" Grid.Row="2" Name="btnNext" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="100" Height="30" Click="btnNext_OnClick" IsEnabled="False">
+            <Rectangle Width="40" Height="25" Fill="{StaticResource ImgForward}"/>
+        </Button>
     </Grid>
 </Page>

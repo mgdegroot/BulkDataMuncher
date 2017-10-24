@@ -83,6 +83,16 @@ namespace BulkDataMuncher {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap imgBackward {
+            get {
+                object obj = ResourceManager.GetObject("imgBackward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap imgCalimero {
             get {
                 object obj = ResourceManager.GetObject("imgCalimero", resourceCulture);
@@ -123,6 +133,16 @@ namespace BulkDataMuncher {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap imgForward {
+            get {
+                object obj = ResourceManager.GetObject("imgForward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap imgInfo {
             get {
                 object obj = ResourceManager.GetObject("imgInfo", resourceCulture);
@@ -136,6 +156,16 @@ namespace BulkDataMuncher {
         internal static System.Drawing.Bitmap imgInspectorGadget {
             get {
                 object obj = ResourceManager.GetObject("imgInspectorGadget", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap imgLibrary {
+            get {
+                object obj = ResourceManager.GetObject("imgLibrary", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -166,6 +196,16 @@ namespace BulkDataMuncher {
         internal static System.Drawing.Bitmap imgPlusPerson {
             get {
                 object obj = ResourceManager.GetObject("imgPlusPerson", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap imgRefresh {
+            get {
+                object obj = ResourceManager.GetObject("imgRefresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

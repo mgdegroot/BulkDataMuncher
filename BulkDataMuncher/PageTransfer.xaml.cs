@@ -102,21 +102,21 @@ namespace BulkDataMuncher
                 pi.CurrentFileDst = Case.CaseDirectory;
                 pi.PercentageDone = progressTick * currCnt;
                 worker.ReportProgress(pi.PercentageDone, pi);
-
+                bool copyResult = false;
                 switch (fileSelection.Type)
                 {
                     case Util.FileSelectionType.DIRECTORY:
-                        Util.DirectoryCopy(fileSelection.Path, Case.CaseDirectory, recursive: true, overwrite: Case.OverwriteExistingFiles);
+                        copyResult = Util.DirectoryCopy(fileSelection.Path, Case.CaseDirectory, recursive: true, overwrite: Case.OverwriteExistingFiles);
                         break;
                     case Util.FileSelectionType.FILE:
-                        Util.FileCopy(fileSelection.Path, Case.CaseDirectory, overwrite: Case.OverwriteExistingFiles);
+                        copyResult = Util.FileCopy(fileSelection.Path, Case.CaseDirectory, overwrite: Case.OverwriteExistingFiles);
                         break;
                 }
                 fileSelection.State = Util.FileState.TRANSFERRED;
                 currCnt++;
                 pi.PercentageDone = progressTick * currCnt;
                 worker.ReportProgress(pi.PercentageDone, pi);
-                System.Threading.Thread.Sleep(2000);
+                //System.Threading.Thread.Sleep(2000);
             }
         }
 

@@ -100,20 +100,18 @@ namespace BulkDataMuncher
         {
             var r = this.FindResource("ImgOverwrite");
             Case.OverwriteExistingFiles = true;
-            btnOverwriteExisting.Background = (ImageBrush) r;
-            //tbOverwriteText.Text = "Wel\r\nOverschrijven";
-            //btnOverwriteExisting.Content = "Wel overschrijven";
 
+            rectOverwriteExisting.Fill = (ImageBrush) r;
+            tbOverwrite.Text = "Wel\r\nOverschrijven";
         }
 
         private void btnOverwriteExisting_OnUnchecked(object sender, RoutedEventArgs e)
         {
             var r = this.FindResource("ImgNoOverwrite");
             Case.OverwriteExistingFiles = false;
-            btnOverwriteExisting.Background = (ImageBrush) r;
+            rectOverwriteExisting.Fill= (ImageBrush) r;
 
-            //tbOverwriteText.Text = "Niet\r\nOverschrijven";
-            //btnOverwriteExisting.Content = "Niet overschrijven";
+            tbOverwrite.Text = "Niet\r\nOverschrijven";
         }
     }
 }

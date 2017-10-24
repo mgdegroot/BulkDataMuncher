@@ -25,14 +25,19 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Button Grid.Column="0" Grid.Row="0" Name="btnAddFiles" Content="Kies bestanden" Margin="10,10,10,10" Height="30" Click="btnAddFiles_OnClick"/>
             <Button Grid.Column="0" Grid.Row="1" Name="btnAddDirectories" Content="Kies folders" Margin="10,10,10,10" Height="30" Click="btnAddDirectories_OnClick"/>
-            <ToggleButton Grid.Column="0" Grid.Row="2" Background="{DynamicResource ImgNoOverwrite}" Name="btnOverwriteExisting" Margin="10,10,10,10" Height="60" Checked="btnOverwriteExisting_OnChecked" Unchecked="btnOverwriteExisting_OnUnchecked">
+            <ToggleButton Grid.Column="0" Grid.Row="2" Name="btnOverwriteExisting" Margin="10,10,10,10" Height="60" Checked="btnOverwriteExisting_OnChecked" Unchecked="btnOverwriteExisting_OnUnchecked">
+                <Rectangle Width="40" Height="50" Fill="{StaticResource ImgNoOverwrite}" Name="rectOverwriteExisting"/>
                 <!--<TextBlock HorizontalAlignment="Center" Name="tbOverwriteText">Niet<LineBreak/>Overschrijven</TextBlock>-->
             </ToggleButton>
-            <Button Grid.Column="0" Grid.Row="3" Name="btnNext" Background="{StaticResource brushNext}" Margin="10,10,10,10" VerticalAlignment="Bottom" Height="30" Click="btnNext_OnClick"/>
+            <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" Margin="10,10,10,10" Name="tbOverwrite">Niet<LineBreak/>Overschrijven</TextBlock>
+            <Button Grid.Column="0" Grid.Row="4" Name="btnNext" Margin="10,10,10,10" VerticalAlignment="Bottom" Height="30" Click="btnNext_OnClick">
+                <Rectangle Width="40" Height="25" Fill="{StaticResource ImgForward}"/>
+            </Button>
         </Grid>
         
 

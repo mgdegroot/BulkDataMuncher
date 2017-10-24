@@ -47,7 +47,9 @@
             <TextBox Grid.Column="1" Grid.Row="5" Text="&lt;DEST&gt;" Name="txtOverwriteExisting"/>
         </Grid>
         <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Stretch" Name="dgSelectedFiles"/>
-        <Button Grid.Column="1" Grid.Row="3" Name="btnGo" Content="Go" Margin="10,10,10,10" Click="btnGo_OnClick"/>
+        <Button Grid.Column="1" Grid.Row="3" Name="btnGo" Margin="10,10,10,10" Click="btnGo_OnClick">
+            <Rectangle Width="40" Height="25" Fill="{StaticResource ImgStart}"/>
+        </Button>
         
     </Grid>
 </Page>

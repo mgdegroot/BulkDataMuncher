@@ -64,5 +64,11 @@ namespace BulkDataMuncher
         {
             checkConfigPresent();
         }
+
+        private void btnOverview_OnClick(object sender, RoutedEventArgs e)
+        {
+            PageReporting pageReporting = new PageReporting();
+            NavigationService.Navigate(pageReporting);
+        }
     }
 }

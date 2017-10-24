@@ -10,6 +10,7 @@ using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.Win32.SafeHandles;
 
 namespace BulkDataMuncher
@@ -56,46 +57,51 @@ namespace BulkDataMuncher
         }
 
 
-        public static void CreateDirectory(string path)
+        public static bool CreateDirectory(string path)
         {
+            bool result = false;
             if (ConfigHandler.UsernameSet)
             {
-                createDirectoryAsUser(path);
+                result = createDirectoryAsUser(path);
             }
             else
             {
-                createDirectory(path);
+                result = createDirectory(path);
             }
+            return result;
         }
 
-        public static void FileCopy(string srcFilename, string dstDirname, bool overwrite)
+        public static bool FileCopy(string srcFilename, string dstDirname, bool overwrite)
         {
+            bool result = false;
             if (ConfigHandler.UsernameSet)
             {
-                fileCopyAsUser(srcFilename, dstDirname, overwrite);
+                result = fileCopyAsUser(srcFilename, dstDirname, overwrite);
             }
             else
             {
-                fileCopy(srcFilename, dstDirname, overwrite);
+                result = fileCopy(srcFilename, dstDirname, overwrite);
             }
+            return result;
         }
 
-        public static void DirectoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        public static bool DirectoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
+            bool result = false;
             if (ConfigHandler.UsernameSet)
             {
-                directoryCopyAsUser(srcDir, dstDir, recursive, overwrite);
+                result = directoryCopyAsUser(srcDir, dstDir, recursive, overwrite);
             }
             else
             {
-                directoryCopy(srcDir, dstDir, recursive, overwrite);
+                result = directoryCopy(srcDir, dstDir, recursive, overwrite);
             }
+            return result;
         }
 
         private static bool directoryExistsAsUser(string path)
         {
-            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password,
-                () => directoryExists(path));
+            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryExists(path));
         }
 
 
@@ -105,32 +111,29 @@ namespace BulkDataMuncher
         }
 
 
-        private static void createDirectoryAsUser(string path)
+        private static bool createDirectoryAsUser(string path)
         {
-            ImpersonationHelper.Impersonate(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, delegate
-            {
-                createDirectory(path);
-            });
+            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () =>createDirectory(path));
         }
 
-        private static void createDirectory(string path)
+        private static bool createDirectory(string path)
         {
+            bool result = true;
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
+            return result;
         }
 
-        private static void directoryCopyAsUser(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        private static bool directoryCopyAsUser(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
-            ImpersonationHelper.Impersonate(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, delegate
-            {
-                directoryCopy(srcDir, dstDir, recursive, overwrite);
-            });
+            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryCopy(srcDir, dstDir, recursive, overwrite));
         }
 
-        private static void directoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        private static bool directoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
+            bool result = false;
             DirectoryInfo dir = new DirectoryInfo(srcDir);
 
             if (!dir.Exists)
@@ -145,11 +148,15 @@ namespace BulkDataMuncher
             {
                 Directory.CreateDirectory(dstDir);
             }
+            if (!Directory.Exists(dir.Name))
+            {
+                Directory.CreateDirectory(Path.Combine(dstDir, dir.Name));
+            }
 
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
-                string temppath = Path.Combine(dstDir, file.Name);
+                string temppath = Path.Combine(dstDir, dir.Name,file.Name);
                 file.CopyTo(temppath, false);
             }
 
@@ -157,19 +164,16 @@ namespace BulkDataMuncher
             {
                 foreach (DirectoryInfo subdir in dirs)
                 {
-                    string temppath = Path.Combine(dstDir, subdir.Name);
+                    string temppath = Path.Combine(dstDir, dir.Name, subdir.Name);
                     DirectoryCopy(subdir.FullName, temppath, recursive, overwrite);
                 }
             }
+            result = true;
+            return result;
         }
 
-        private static void fileCopyAsUser(string srcFilename, string dstDirname, bool overwrite)
-        {
-            ImpersonationHelper.Impersonate(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, delegate
-            {
-                fileCopy(srcFilename, dstDirname, overwrite);
-            });
-        }
+        private static bool fileCopyAsUser(string srcFilename, string dstDirname, bool overwrite) => 
+            ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => fileCopy(srcFilename, dstDirname, overwrite));
 
         /// <summary>
         /// 
@@ -178,8 +182,9 @@ namespace BulkDataMuncher
         /// <param name="srcFilename"></param>
         /// <param name="dstDirname"></param>
         /// <param name="overwrite"></param>
-        private static void fileCopy(string srcFilename, string dstDirname, bool overwrite)
+        private static bool fileCopy(string srcFilename, string dstDirname, bool overwrite)
         {
+            bool result = false;
             FileInfo file = new FileInfo(srcFilename);
 
             if (!file.Exists)
@@ -192,8 +197,18 @@ namespace BulkDataMuncher
                 throw new DirectoryNotFoundException("Destination directory not found: " + dstDirname);
             }
             string dstFilepath = Path.Combine(dstDirname, file.Name);
-            file.CopyTo(dstFilepath, overwrite);
-
+            try
+            {
+                file.CopyTo(dstFilepath, overwrite);
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("already exists"))
+                //MessageBox.Show($"Fout: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                result = false;
+            }
+            return result;
         }
     }
 

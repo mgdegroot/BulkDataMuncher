@@ -43,6 +43,14 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack.Core.1.1.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack.Shell.1.1.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -83,6 +91,9 @@
     <Compile Include="PageConfig.xaml.cs">
       <DependentUpon>PageConfig.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PageReporting.xaml.cs">
+      <DependentUpon>PageReporting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PageSummaryBefore.xaml.cs">
       <DependentUpon>PageSummaryBefore.xaml</DependentUpon>
     </Compile>
@@ -95,6 +106,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Util.cs" />
+    <Page Include="PageReporting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PageTransfer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -185,6 +200,10 @@
   <ItemGroup>
     <Resource Include="Resources\imgNoOverwrite.png" />
     <Resource Include="Resources\imgOverwrite.png" />
+    <Resource Include="Resources\imgBackward.png" />
+    <Resource Include="Resources\imgForward.png" />
+    <Resource Include="Resources\imgRefresh.png" />
+    <Resource Include="Resources\imgLibrary.png" />
     <Content Include="Resources\Make_It_Bun_Dem_downsample.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

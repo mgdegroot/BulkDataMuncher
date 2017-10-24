@@ -12,10 +12,12 @@ namespace BulkDataMuncher
     public static class CasesDB
     {
         private const string TABLE_CASE = "datamuncher_cases";
-        private const string TABLE_CASE_CONTENT = "datamunchar_content";
+        private const string TABLE_CASE_CONTENT = "datamuncher_content";
         private const string DATE_FORMAT = "yyyy-MM-dd";
         private const string DATETIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
         private const string DB_ALIAS = "CasesDB";
+
+        
 
         public static void CreateDatabase()
         {
@@ -77,7 +79,7 @@ namespace BulkDataMuncher
         {
             
             string qry =
-                $"UPDATE {TABLE_CASE} SET Number = '{theCase.Number}', Name='{theCase.Name}', Owner='{theCase.Owner}', Date='{theCase.Date:DATE_FORMAT}'";
+                $"UPDATE {TABLE_CASE} SET Number = '{theCase.Number}', Name='{theCase.Name}', Owner='{theCase.Owner}', Date='{theCase.Date.ToString(DATE_FORMAT)}'";
 
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
@@ -117,7 +119,7 @@ namespace BulkDataMuncher
 
         public static CaseInfo GetCase(string caseNumber)
         {
-            string qry = $"SELECT Number, Name, Owner, Date FROM {TABLE_CASE} WHERE Number = {caseNumber}";
+            string qry = $"SELECT Number, Name, Owner, Date FROM {TABLE_CASE} WHERE Number = '{caseNumber}'";
             CaseInfo retVal;
             
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
@@ -135,6 +137,7 @@ namespace BulkDataMuncher
                         Name = reader["Name"] as string,
                         Owner = reader["Owner"] as string,
                         Date = DateTime.Parse(reader["Date"] as string),
+                        IsNew = false,
 
                     };
                 }
@@ -147,6 +150,27 @@ namespace BulkDataMuncher
             }
 
             return retVal;
+        }
+
+        public static SQLiteDataAdapter GetDataAdapterCases()
+        {
+            SQLiteConnection connection = new SQLiteConnection(ConnectionString);
+            //connection.Open();
+            connection.CreateCommand();
+            string qry = $"SELECT Number, Name, Owner, Date FROM {TABLE_CASE}";
+            SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry, connection);
+            return adapter;
+
+        }
+
+        public static SQLiteDataAdapter GetDataAdapterCaseContent(string caseNumber)
+        {
+            SQLiteConnection connection = new SQLiteConnection(ConnectionString);
+            //connection.Open();
+            connection.CreateCommand();
+            string qry = $"SELECT CaseNumber, Path, FileType, ArchiveDate FROM {TABLE_CASE_CONTENT} WHERE CaseNumber = '{caseNumber}'";
+            SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry, connection);
+            return adapter;
         }
 
         //private static void AttachDB(string fileDB, string aliasName, SQLiteConnection cn)
@@ -164,7 +188,7 @@ namespace BulkDataMuncher
         //}
 
 
-        private static string ConnectionString =>
+        public static string ConnectionString =>
             $"Data Source={ConfigHandler.DatabasePath};Version=3;Pooling=True;Max Pool Size=100;";
     }
 }

@@ -19,7 +19,11 @@
         <ImageBrush x:Key="ImgControlPanel" ImageSource="/Resources/imgControlPanel.png"/>
         <ImageBrush x:Key="ImgOverwrite" ImageSource="/Resources/imgOverwrite.png"/>
         <ImageBrush x:Key="ImgNoOverwrite" ImageSource="/Resources/imgNoOverwrite.png"/>
-        <DrawingBrush x:Key="brushNext">
+        <ImageBrush x:Key="ImgForward" ImageSource="/Resources/imgForward.png"/>
+        <ImageBrush x:Key="ImgBackward" ImageSource="/Resources/imgBackward.png"/>
+        <ImageBrush x:Key="ImgRefresh" ImageSource="/Resources/imgRefresh.png"/>
+        <ImageBrush x:Key="ImgLibrary" ImageSource="/Resources/imgLibrary.png"/>
+        <!--<DrawingBrush x:Key="brushNext">
             <DrawingBrush.Drawing>
                 <DrawingGroup>
                     <DrawingGroup.Children>
@@ -55,7 +59,7 @@
                     </DrawingBrush>
                 </Rectangle.Fill>
             </Rectangle>
-        </Viewbox>
+        </Viewbox>-->
         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
             <Style.Resources>
                 <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
