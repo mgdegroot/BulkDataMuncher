@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
+using FolderSelect;
 using MessageBox = System.Windows.MessageBox;
 
 namespace BulkDataMuncher
@@ -69,15 +70,51 @@ namespace BulkDataMuncher
 
         private void handleChooseDirectories()
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.ShowNewFolderButton = false;
+            // NATIVE -->
+            //FolderBrowserDialog fbd = new FolderBrowserDialog();
+            //fbd.ShowNewFolderButton = false;
 
-            if (fbd.ShowDialog() == DialogResult.OK)
+            //if (fbd.ShowDialog() == DialogResult.OK)
+            //{
+            //    Case.Files.Add(new Util.FileSelection()
+            //    {
+            //        Type=Util.FileSelectionType.DIRECTORY,
+            //        Path=fbd.SelectedPath,
+            //    });
+            //}
+            // <-- END NATIVE
+
+            // EX -->
+            //var dlg1 = new FolderBrowserDialogEx();
+            //dlg1.Description = "Kies een directory:";
+            //dlg1.ShowNewFolderButton = true;
+            //dlg1.ShowEditBox = true;
+            ////dlg1.ShowBothFilesAndFolders = true;
+            ////dlg1.NewStyle = false;
+            //dlg1.ShowFullPathInEditBox = true;
+            //dlg1.RootFolder = System.Environment.SpecialFolder.MyComputer;
+
+            //DialogResult result = dlg1.ShowDialog();
+            //if (result == DialogResult.OK)
+            //{
+            //    Case.Files.Add(new Util.FileSelection()
+            //        {
+            //            Type=Util.FileSelectionType.DIRECTORY,
+            //            Path= dlg1.SelectedPath,
+            //        });
+            //}
+            // <--END EX
+
+            var fsd = new FolderSelectDialog();
+            fsd.Title = "Kies directory";
+            fsd.InitialDirectory = @"c:\";
+            
+            if (fsd.ShowDialog(IntPtr.Zero))
             {
                 Case.Files.Add(new Util.FileSelection()
                 {
-                    Type=Util.FileSelectionType.DIRECTORY,
-                    Path=fbd.SelectedPath,
+                    Type = Util.FileSelectionType.DIRECTORY,
+                    Path = fsd.FileName,
                 });
             }
         }

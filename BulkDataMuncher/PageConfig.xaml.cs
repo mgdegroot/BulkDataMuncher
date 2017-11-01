@@ -82,5 +82,13 @@ namespace BulkDataMuncher
         {
             btnEnableStuff.Content = "NOPE";
         }
+
+        private void btnCancel_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+            {
+                NavigationService.GoBack();
+            }
+        }
     }
 }

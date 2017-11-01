@@ -79,7 +79,7 @@ namespace BulkDataMuncher
         {
             
             string qry =
-                $"UPDATE {TABLE_CASE} SET Number = '{theCase.Number}', Name='{theCase.Name}', Owner='{theCase.Owner}', Date='{theCase.Date.ToString(DATE_FORMAT)}'";
+                $"UPDATE {TABLE_CASE} SET Number = '{theCase.Number}', Name='{theCase.Name}', Owner='{theCase.Owner}', Date='{theCase.Date.ToString(DATE_FORMAT)}' WHERE Number='{theCase.Number}'";
 
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
@@ -91,7 +91,7 @@ namespace BulkDataMuncher
             }
         }
 
-        public static void AddFileToCaseDB(Util.FileSelection fileSelection, CaseInfo theCase)
+        public static void AddTransferredFileToCaseDB(Util.FileSelection fileSelection, CaseInfo theCase)
         {
             string qry = $"INSERT OR REPLACE INTO {TABLE_CASE_CONTENT}(CaseNumber, Path, FileType, ArchiveDate) VALUES('{theCase.Number}', '{fileSelection.Path}', '{fileSelection.Type}', '{DateTime.Now.ToString(DATETIME_FORMAT)}')";
 
@@ -105,17 +105,29 @@ namespace BulkDataMuncher
             }
         }
 
-        public static void AddTransferedFilesToCaseDB(CaseInfo theCase)
+        public static void AddTransferedFilesToCaseDB(List<Util.FileSelection> fileSelections, CaseInfo theCase)
         {
-            foreach (var fileSelection in theCase.Files)
+            foreach (var fileSelection in fileSelections)
             {
                 if (fileSelection.State == Util.FileState.TRANSFERRED)
                 {
-                    AddFileToCaseDB(fileSelection, theCase);
+                    AddTransferredFileToCaseDB(fileSelection, theCase);
                 }
             }
-            
+
         }
+
+        //public static void AddTransferedFilesToCaseDB(CaseInfo theCase)
+        //{
+        //    foreach (var fileSelection in theCase.Files)
+        //    {
+        //        if (fileSelection.State == Util.FileState.TRANSFERRED)
+        //        {
+        //            AddTransferredFileToCaseDB(fileSelection, theCase);
+        //        }
+        //    }
+            
+        //}
 
         public static CaseInfo GetCase(string caseNumber)
         {
@@ -152,13 +164,20 @@ namespace BulkDataMuncher
             return retVal;
         }
 
-        public static SQLiteDataAdapter GetDataAdapterCases()
+        public static SQLiteDataAdapter GetDataAdapterCases(string caseNumber="")
         {
             SQLiteConnection connection = new SQLiteConnection(ConnectionString);
             //connection.Open();
             connection.CreateCommand();
             string qry = $"SELECT Number, Name, Owner, Date FROM {TABLE_CASE}";
+            
+            if (!string.IsNullOrEmpty(caseNumber))
+            {
+                qry += $" WHERE Number = '{caseNumber}'";
+            }
+
             SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry, connection);
+
             return adapter;
 
         }

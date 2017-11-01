@@ -42,9 +42,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Margin="2,2,2,2" Content="Save" Name="btnSave" Click="btnSave_OnClick"/>
             <Button Grid.Column="1" Margin="2,2,2,2" Content="Clear" Name="btnClear" Click="btnClear_OnClick"/>
+            <Button Grid.Column="2" Margin="2,2,2,2" Content="Cancel" Name="btnCancel" Click="btnCancel_OnClick" />
         </Grid>
         
     </Grid>

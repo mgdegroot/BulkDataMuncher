@@ -29,6 +29,8 @@ namespace BulkDataMuncher
         {
             PENDING = 0,
             TRANSFERRED = 1,
+            DUPLICATE = 2,
+            ERROR = 3,
             // TODO: more states
 
         }
@@ -44,22 +46,36 @@ namespace BulkDataMuncher
             public string Path { get; set; }
         }
 
+        public class ReturnStuffer
+        {
+            public ReturnStuffer()
+            {
+                ListOfStuff = new List<string>();
+                Files = new List<FileSelection>();
+            }
+            public bool Result { get; set; }
+            public string Msg { get; set; }
+            public string ErrMsg { get; set; }
+            public List<string> ListOfStuff { get; set; }
+            public List<FileSelection> Files { get; set; }
+        }
+
         public static bool DirectoryExistst(string path)
         {
             if (ConfigHandler.UsernameSet)
             {
-                return directoryExistsAsUser(path);
+                return directoryExistsAsUser(path).Result;
             }
             else
             {
-                return directoryExists(path);
+                return directoryExists(path).Result;
             }
         }
 
 
         public static bool CreateDirectory(string path)
         {
-            bool result = false;
+            ReturnStuffer result;
             if (ConfigHandler.UsernameSet)
             {
                 result = createDirectoryAsUser(path);
@@ -68,12 +84,12 @@ namespace BulkDataMuncher
             {
                 result = createDirectory(path);
             }
-            return result;
+            return result.Result;
         }
 
-        public static bool FileCopy(string srcFilename, string dstDirname, bool overwrite)
+        public static FileSelection FileCopy(string srcFilename, string dstDirname, bool overwrite)
         {
-            bool result = false;
+            ReturnStuffer result;
             if (ConfigHandler.UsernameSet)
             {
                 result = fileCopyAsUser(srcFilename, dstDirname, overwrite);
@@ -82,12 +98,14 @@ namespace BulkDataMuncher
             {
                 result = fileCopy(srcFilename, dstDirname, overwrite);
             }
-            return result;
+
+            //return result.Result ? result.Files[0] : new FileSelection() {Path="", State=FileState.PENDING, Type= FileSelectionType.FILE };
+            return result.Files[0];
         }
 
-        public static bool DirectoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        public static List<FileSelection> DirectoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
-            bool result = false;
+            ReturnStuffer result;
             if (ConfigHandler.UsernameSet)
             {
                 result = directoryCopyAsUser(srcDir, dstDir, recursive, overwrite);
@@ -96,29 +114,36 @@ namespace BulkDataMuncher
             {
                 result = directoryCopy(srcDir, dstDir, recursive, overwrite);
             }
-            return result;
+            return result.Files;
         }
 
-        private static bool directoryExistsAsUser(string path)
+        private static ReturnStuffer directoryExistsAsUser(string path)
         {
             return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryExists(path));
         }
 
 
-        private static bool directoryExists(string path)
+        private static ReturnStuffer directoryExists(string path)
         {
-            return Directory.Exists(path);
+            ReturnStuffer result = new ReturnStuffer()
+            {
+                Result = Directory.Exists(path),
+            };
+            return result;
         }
 
 
-        private static bool createDirectoryAsUser(string path)
+        private static ReturnStuffer createDirectoryAsUser(string path)
         {
             return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () =>createDirectory(path));
         }
 
-        private static bool createDirectory(string path)
+        private static ReturnStuffer createDirectory(string path)
         {
-            bool result = true;
+            ReturnStuffer result = new ReturnStuffer()
+            {
+                Result = false,
+            };
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -126,14 +151,17 @@ namespace BulkDataMuncher
             return result;
         }
 
-        private static bool directoryCopyAsUser(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        private static ReturnStuffer directoryCopyAsUser(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
             return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryCopy(srcDir, dstDir, recursive, overwrite));
         }
 
-        private static bool directoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        private static ReturnStuffer directoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
-            bool result = false;
+            ReturnStuffer result = new ReturnStuffer()
+            {
+                Result = false,
+            };
             DirectoryInfo dir = new DirectoryInfo(srcDir);
 
             if (!dir.Exists)
@@ -152,12 +180,20 @@ namespace BulkDataMuncher
             {
                 Directory.CreateDirectory(Path.Combine(dstDir, dir.Name));
             }
+            result.Files.Add(new FileSelection()
+            {
+                Path = Path.Combine(dstDir, dir.Name),
+                State = FileState.TRANSFERRED,
+                Type = FileSelectionType.DIRECTORY,
+            });
+
 
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
                 string temppath = Path.Combine(dstDir, dir.Name,file.Name);
                 file.CopyTo(temppath, false);
+                result.Files.Add(new FileSelection() {Path=temppath, State=FileState.TRANSFERRED, Type=FileSelectionType.FILE});
             }
 
             if (recursive)
@@ -165,14 +201,15 @@ namespace BulkDataMuncher
                 foreach (DirectoryInfo subdir in dirs)
                 {
                     string temppath = Path.Combine(dstDir, dir.Name, subdir.Name);
-                    DirectoryCopy(subdir.FullName, temppath, recursive, overwrite);
+                    ReturnStuffer subresult = directoryCopy(subdir.FullName, temppath, recursive, overwrite);
+                    result.Files.AddRange(subresult.Files);
                 }
             }
-            result = true;
+            result.Result = true;
             return result;
         }
 
-        private static bool fileCopyAsUser(string srcFilename, string dstDirname, bool overwrite) => 
+        private static ReturnStuffer fileCopyAsUser(string srcFilename, string dstDirname, bool overwrite) => 
             ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => fileCopy(srcFilename, dstDirname, overwrite));
 
         /// <summary>
@@ -182,9 +219,13 @@ namespace BulkDataMuncher
         /// <param name="srcFilename"></param>
         /// <param name="dstDirname"></param>
         /// <param name="overwrite"></param>
-        private static bool fileCopy(string srcFilename, string dstDirname, bool overwrite)
+        private static Util.ReturnStuffer fileCopy(string srcFilename, string dstDirname, bool overwrite)
         {
-            bool result = false;
+            ReturnStuffer returnStuffer = new ReturnStuffer()
+            {
+                Result = false,
+            };
+
             FileInfo file = new FileInfo(srcFilename);
 
             if (!file.Exists)
@@ -200,15 +241,35 @@ namespace BulkDataMuncher
             try
             {
                 file.CopyTo(dstFilepath, overwrite);
-                result = true;
+                returnStuffer.Files.Add(new FileSelection() { Path=dstFilepath, State = FileState.TRANSFERRED, Type = FileSelectionType.FILE});
+                returnStuffer.Result = true;
             }
             catch (Exception ex)
             {
                 if (ex.Message.Contains("already exists"))
-                //MessageBox.Show($"Fout: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
-                result = false;
+                {
+                    returnStuffer.Files.Add(new FileSelection()
+                    {
+                        Path = dstFilepath,
+                        State = FileState.DUPLICATE,
+                        Type = FileSelectionType.FILE
+                    });
+                    returnStuffer.ErrMsg = ex.Message;
+                    returnStuffer.Result = false;
+                }
+                else
+                {
+                    returnStuffer.Files.Add(new FileSelection()
+                    {
+                        Path = dstFilepath,
+                        State = FileState.ERROR,
+                        Type = FileSelectionType.FILE
+                    });
+                    returnStuffer.ErrMsg = ex.Message;
+                    returnStuffer.Result = false;
+                }
             }
-            return result;
+            return returnStuffer;
         }
     }
 
@@ -305,10 +366,11 @@ namespace BulkDataMuncher
         /// <param name="actionToExecute"></param>
         /// <returns></returns>
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public static bool ImpersonateWithBoolRet(string domainName, string userName, string userPassword, Func<bool> actionToExecute)
+        public static Util.ReturnStuffer ImpersonateWithBoolRet(string domainName, string userName, string userPassword, Func<Util.ReturnStuffer> actionToExecute)
         {
             SafeTokenHandle safeTokenHandle;
-            bool retResultValue = false;
+            Util.ReturnStuffer returnStuffer = new Util.ReturnStuffer();
+            returnStuffer.Result = false;
             try
             {
 
@@ -332,7 +394,7 @@ namespace BulkDataMuncher
                     {
                         using (WindowsImpersonationContext impersonatedUser = newId.Impersonate())
                         {
-                            retResultValue = actionToExecute();
+                            returnStuffer = actionToExecute();
                         }
                     }
                 }
@@ -346,7 +408,7 @@ namespace BulkDataMuncher
                 throw;
             }
 
-            return retResultValue;
+            return returnStuffer;
         }
     }
 }

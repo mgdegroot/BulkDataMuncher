@@ -28,8 +28,13 @@ namespace BulkDataMuncher
 
         class ProgressInfo
         {
+            public ProgressInfo()
+            {
+                TransferredFiles = new List<Util.FileSelection>();
+            }
             public string CurrentFileSrc { get; set; }
             public string CurrentFileDst { get; set; }
+            public List<Util.FileSelection> TransferredFiles { get; set; }
             public int PercentageDone { get; set; }
         }
 
@@ -90,6 +95,7 @@ namespace BulkDataMuncher
             Util.CreateDirectory(workerCase.CaseDirectory);
 
             ProgressInfo pi = new ProgressInfo();
+            List<Util.FileSelection> transferList = new List<Util.FileSelection>();
             
             foreach (Util.FileSelection fileSelection in workerCase.Files)
             {
@@ -106,18 +112,32 @@ namespace BulkDataMuncher
                 switch (fileSelection.Type)
                 {
                     case Util.FileSelectionType.DIRECTORY:
-                        copyResult = Util.DirectoryCopy(fileSelection.Path, Case.CaseDirectory, recursive: true, overwrite: Case.OverwriteExistingFiles);
+                        List<Util.FileSelection>fileList = Util.DirectoryCopy(fileSelection.Path, Case.CaseDirectory, recursive: true, overwrite: Case.OverwriteExistingFiles);
+                        lock (pi.TransferredFiles)
+                        {
+                            pi.TransferredFiles = fileList;
+                            //pi.TransferredFiles.AddRange(fileList);
+                        }
+                        transferList.AddRange(fileList);
                         break;
                     case Util.FileSelectionType.FILE:
-                        copyResult = Util.FileCopy(fileSelection.Path, Case.CaseDirectory, overwrite: Case.OverwriteExistingFiles);
+                        Util.FileSelection file = Util.FileCopy(fileSelection.Path, Case.CaseDirectory, overwrite: Case.OverwriteExistingFiles);
+                        lock (pi.TransferredFiles)
+                        {
+                            pi.TransferredFiles = new List<Util.FileSelection>(1);
+                            pi.TransferredFiles.Add(file);
+                        }
+                        transferList.Add(file);
                         break;
                 }
                 fileSelection.State = Util.FileState.TRANSFERRED;
                 currCnt++;
                 pi.PercentageDone = progressTick * currCnt;
-                worker.ReportProgress(pi.PercentageDone, pi);
+                //worker.ReportProgress(pi.PercentageDone, pi);
                 //System.Threading.Thread.Sleep(2000);
             }
+            pi.TransferredFiles = transferList;
+            e.Result = pi;
         }
 
         private void transfer_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -130,7 +150,7 @@ namespace BulkDataMuncher
 
         private void transfer_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            CasesDB.AddTransferedFilesToCaseDB(Case);
+            //CasesDB.AddTransferedFilesToCaseDB(Case);
             if (e.Cancelled)
             {
                 MessageBox.Show("Cancelled", "Cancelled", MessageBoxButton.OK);
@@ -141,15 +161,18 @@ namespace BulkDataMuncher
             }
             else
             {
-                if (MessageBox.Show("Completed", "Completed", MessageBoxButton.OK, MessageBoxImage.Information) ==
+                ProgressInfo pi = (ProgressInfo) e.Result;
+                CasesDB.AddTransferedFilesToCaseDB(pi.TransferredFiles, Case);
+                string failedFiles = pi.TransferredFiles.Where(
+                    fileSel => fileSel.State == Util.FileState.ERROR || fileSel.State == Util.FileState.DUPLICATE
+                    ).Aggregate(string.Empty, (current, fileSel) => current + (fileSel.Path + System.Environment.NewLine));
+
+                if (MessageBox.Show(failedFiles, "Completed", MessageBoxButton.OK, MessageBoxImage.Information) ==
                     MessageBoxResult.OK)
                 {
                     NavigationService.Navigate(new PageStart());
                 }
             }
-
-            
         }
-
     }
 }
