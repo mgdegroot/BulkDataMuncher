@@ -26,7 +26,7 @@
         <Label Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Content="Bestemming"/>
         <Label Grid.Column="1" Grid.Row="1" Margin="10,10,10,10" Content="&lt;BESTEMMING&gt;" Name="lblDest"/>
         <ProgressBar Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Margin="10,10,10,10" Height="50" Name="pbProgress"/>
-        <Button Grid.Column="0" Grid.Row="3" Content="Annuleer" VerticalAlignment="Bottom" Name="bntCancel" Click="bntCancel_OnClick"/>
+        <Button Grid.Column="0" Grid.Row="3" Margin="10,10,10,10" Content="Annuleer" VerticalAlignment="Bottom" Name="bntCancel" Click="bntCancel_OnClick"/>
         <MediaElement Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Margin="10,10,10,10" Name="meMuncher" Source="Resources/cookiemonster_empty.mp4" LoadedBehavior="Play"> 
             <MediaElement.Triggers>
                 <EventTrigger RoutedEvent="MediaElement.Loaded">
@@ -41,7 +41,7 @@
                 </EventTrigger>
             </MediaElement.Triggers>
         </MediaElement>
-        <MediaElement Grid.Column="0" Grid.Row="4" Volume="10" Name="myMediaElement" IsMuted="False"  
+        <MediaElement Grid.Column="0" Grid.Row="4" Volume="10" Name="backgroundMusicElement" IsMuted="False"  
                       LoadedBehavior="Play" UnloadedBehavior="Manual" Visibility="Hidden"
                       
                       Source="Resources/Make_It_Bun_Dem_downsample.mp3"/>

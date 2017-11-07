@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +16,11 @@ using System.Windows.Shapes;
 namespace BulkDataMuncher
 {
     /// <summary>
-    /// Interaction logic for PageSummaryBefore.xaml
+    /// Interaction logic for PageSummaryAfter.xaml
     /// </summary>
-    public partial class PageSummaryBefore : Page, IBasePage
+    public partial class PageSummaryAfter : Page, IBasePage
     {
-        public PageSummaryBefore(CaseInfo theCase)
+        public PageSummaryAfter(CaseInfo theCase)
         {
             InitializeComponent();
             this.Case = theCase;
@@ -33,7 +32,7 @@ namespace BulkDataMuncher
 
         private void populateFields()
         {
-            dgSelectedFiles.ItemsSource = Case.Files;
+            dgTransferedFiles.ItemsSource = Case.Files;
 
             txtZaaknaam.Text = Case.Name;
             txtZaaknummer.Text = Case.Number;
@@ -44,19 +43,19 @@ namespace BulkDataMuncher
             txtDest.Text = Case.CaseDirectory;
         }
 
-        private void btnGo_OnClick(object sender, RoutedEventArgs e)
+        private void btnOk_OnClick(object sender, RoutedEventArgs e)
         {
-            if (Case.OverwriteExistingFiles)
+            NavigationService.Navigate(new PageStart());
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            // State has changed, do not allow to go back to transfer page -->
+            var entry = NavigationService.RemoveBackEntry();
+            while (entry != null)
             {
-                if (MessageBox.Show("Bestaande bestanden worden overschreven.\r\nZeker weten?",
-                        "Bestaande overschrijven", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) ==
-                    MessageBoxResult.No)
-                {
-                    return;
-                }
+                entry = NavigationService.RemoveBackEntry();
             }
-            PageTransfer pageTransfer = new PageTransfer(Case);
-            NavigationService.Navigate(pageTransfer);
         }
     }
 }

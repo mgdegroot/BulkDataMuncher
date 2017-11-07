@@ -14,7 +14,7 @@ namespace BulkDataMuncher
         private const string TABLE_CASE = "datamuncher_cases";
         private const string TABLE_CASE_CONTENT = "datamuncher_content";
         private const string DATE_FORMAT = "yyyy-MM-dd";
-        private const string DATETIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+        private const string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
         private const string DB_ALIAS = "CasesDB";
 
         

@@ -95,7 +95,12 @@ namespace BulkDataMuncher
                 }
             }
             
-            SaveFileDialog ofd = new SaveFileDialog();
+            SaveFileDialog ofd = new SaveFileDialog()
+            {
+                RestoreDirectory = true,
+                DefaultExt = "xlsx",
+                Filter = "Excel Files Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
+            };
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {

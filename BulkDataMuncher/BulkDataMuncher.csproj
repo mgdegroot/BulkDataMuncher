@@ -113,6 +113,9 @@
     <Compile Include="PageReporting.xaml.cs">
       <DependentUpon>PageReporting.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PageSummaryAfter.xaml.cs">
+      <DependentUpon>PageSummaryAfter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PageSummaryBefore.xaml.cs">
       <DependentUpon>PageSummaryBefore.xaml</DependentUpon>
     </Compile>
@@ -127,6 +130,10 @@
     </Compile>
     <Compile Include="Util.cs" />
     <Page Include="PageReporting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PageSummaryAfter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

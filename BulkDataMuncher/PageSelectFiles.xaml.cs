@@ -107,7 +107,7 @@ namespace BulkDataMuncher
 
             var fsd = new FolderSelectDialog();
             fsd.Title = "Kies directory";
-            fsd.InitialDirectory = @"c:\";
+            //fsd.InitialDirectory = @"c:\";
             
             if (fsd.ShowDialog(IntPtr.Zero))
             {

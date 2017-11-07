@@ -5,5 +5,5 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BulkDataMuncher"
         mc:Ignorable="d"
-        Title="DR Datamuncher" Height="350" Width="525" Source="PageStart.xaml" Icon="Resources/imgInspectorGadget.png">
+        Title="DR Datamuncher" Height="700" Width="525" Source="PageStart.xaml" Icon="Resources/imgInspectorGadget.png">
 </NavigationWindow>

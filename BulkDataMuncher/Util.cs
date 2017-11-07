@@ -9,16 +9,41 @@ using System.Security;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32.SafeHandles;
 
 namespace BulkDataMuncher
 {
-
-
     public class Util
     {
+        public class ProgressInfo
+        {
+            private static int percentageDone = 0;
+            public ProgressInfo()
+            {
+                TransferredFiles = new List<Util.FileSelection>();
+                StepSize = 1;
+            }
+            public string CurrentFileSrc { get; set; }
+            public string CurrentFileDst { get; set; }
+            public List<Util.FileSelection> TransferredFiles { get; set; }
+
+            public static int PercentageDone
+            {
+                get { return percentageDone; }
+            }
+
+            public static int StepSize { get; set; }
+            public static void Increment()
+            {
+                Interlocked.Add(ref percentageDone, StepSize);
+            }
+
+        }
+
+
         public enum FileSelectionType
         {
             FILE = 0,
@@ -32,7 +57,6 @@ namespace BulkDataMuncher
             DUPLICATE = 2,
             ERROR = 3,
             // TODO: more states
-
         }
         public class FileSelection
         {
@@ -58,6 +82,30 @@ namespace BulkDataMuncher
             public string ErrMsg { get; set; }
             public List<string> ListOfStuff { get; set; }
             public List<FileSelection> Files { get; set; }
+        }
+
+        public static void WriteCaseFileToOutput(CaseInfo theCase)
+        {
+            string p = theCase.CaseDirectory;
+            string filename = $"_zaak_overzicht_{DateTime.Now.ToString("yyyy-MM-ddTHHmmss")}.txt";
+
+            string text = $"zaak:\t{theCase.Name}\r\n" +
+                          $"nummer:\t{theCase.Number}\r\n" +
+                          $"eigenaar:\t{theCase.Owner}\r\n" +
+                          $"datum:\t{theCase.Date.ToString("yyyy-MM-dd")}\r\n" +
+                          $"datum laatst bijgewerkt:\t{DateTime.Now.ToString("yyyy-MM-dd")}\r\n" +
+                          $"folder:\t{theCase.CaseDirectory}\r\n" +
+                          $"aantal:\t{theCase.Files.Count}\r\n" +
+                          $"\r\n\r\n"
+                ;
+
+            foreach (var fileSelection in theCase.Files)
+            {
+                text += fileSelection.State + " - " + fileSelection.Path + System.Environment.NewLine;
+            }
+            File.WriteAllText(Path.Combine(p, filename), text);
+
+
         }
 
         public static bool DirectoryExistst(string path)
@@ -87,6 +135,7 @@ namespace BulkDataMuncher
             return result.Result;
         }
 
+
         public static FileSelection FileCopy(string srcFilename, string dstDirname, bool overwrite)
         {
             ReturnStuffer result;
@@ -103,6 +152,7 @@ namespace BulkDataMuncher
             return result.Files[0];
         }
 
+
         public static List<FileSelection> DirectoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
             ReturnStuffer result;
@@ -117,9 +167,10 @@ namespace BulkDataMuncher
             return result.Files;
         }
 
+
         private static ReturnStuffer directoryExistsAsUser(string path)
         {
-            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryExists(path));
+            return ImpersonationHelper.ImpersonateWithReturnStuffer(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryExists(path));
         }
 
 
@@ -135,8 +186,9 @@ namespace BulkDataMuncher
 
         private static ReturnStuffer createDirectoryAsUser(string path)
         {
-            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () =>createDirectory(path));
+            return ImpersonationHelper.ImpersonateWithReturnStuffer(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () =>createDirectory(path));
         }
+
 
         private static ReturnStuffer createDirectory(string path)
         {
@@ -151,66 +203,109 @@ namespace BulkDataMuncher
             return result;
         }
 
-        private static ReturnStuffer directoryCopyAsUser(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
-        {
-            return ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryCopy(srcDir, dstDir, recursive, overwrite));
-        }
 
         private static ReturnStuffer directoryCopy(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
         {
-            ReturnStuffer result = new ReturnStuffer()
-            {
-                Result = false,
-            };
-            DirectoryInfo dir = new DirectoryInfo(srcDir);
+            ReturnStuffer result = new ReturnStuffer();
 
-            if (!dir.Exists)
-            {
-                throw new DirectoryNotFoundException("Source directory not found: " + srcDir);
-            }
+            // Directories keep their base -->
+            dstDir = Path.Combine(dstDir, new DirectoryInfo(srcDir).Name);
 
-            DirectoryInfo[] dirs = dir.GetDirectories();
-
-            // Create dst directories 
-            if (!Directory.Exists(dstDir))
+            //Create all of the directories -->
+            foreach (string dirPath in Directory.GetDirectories(srcDir, "*", SearchOption.AllDirectories))
             {
-                Directory.CreateDirectory(dstDir);
-            }
-            if (!Directory.Exists(dir.Name))
-            {
-                Directory.CreateDirectory(Path.Combine(dstDir, dir.Name));
-            }
-            result.Files.Add(new FileSelection()
-            {
-                Path = Path.Combine(dstDir, dir.Name),
-                State = FileState.TRANSFERRED,
-                Type = FileSelectionType.DIRECTORY,
-            });
-
-
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                string temppath = Path.Combine(dstDir, dir.Name,file.Name);
-                file.CopyTo(temppath, false);
-                result.Files.Add(new FileSelection() {Path=temppath, State=FileState.TRANSFERRED, Type=FileSelectionType.FILE});
-            }
-
-            if (recursive)
-            {
-                foreach (DirectoryInfo subdir in dirs)
+                Directory.CreateDirectory(dirPath.Replace(srcDir, dstDir));
+                result.Files.Add(new FileSelection()
                 {
-                    string temppath = Path.Combine(dstDir, dir.Name, subdir.Name);
-                    ReturnStuffer subresult = directoryCopy(subdir.FullName, temppath, recursive, overwrite);
-                    result.Files.AddRange(subresult.Files);
-                }
+                    Path = dirPath.Replace(srcDir, dstDir),
+                    State = FileState.TRANSFERRED,
+                    Type = FileSelectionType.DIRECTORY,
+                });
             }
-            result.Result = true;
+
+
+            // TODO: get total file count via other means if this is performance hit.... -->
+            int fileCnt = Directory.GetFiles(srcDir, "*.*", SearchOption.AllDirectories).Length;
+
+            Util.ProgressInfo.StepSize = 100 / fileCnt;
+
+            //Copy all the files & Replaces any files with the same name -->
+            foreach (string newPath in Directory.GetFiles(srcDir, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(srcDir, dstDir), overwrite);
+                result.Files.Add(new FileSelection() { Path = newPath.Replace(srcDir, dstDir), State = FileState.TRANSFERRED, Type = FileSelectionType.FILE });
+
+                Util.ProgressInfo.Increment();
+            }
+
             return result;
         }
 
+
+        private static ReturnStuffer directoryCopyAsUser(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        {
+            return ImpersonationHelper.ImpersonateWithReturnStuffer(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => directoryCopy(srcDir, dstDir, recursive, overwrite));
+        }
+
+        //private static ReturnStuffer directoryCopy_old(string srcDir, string dstDir, bool recursive = true, bool overwrite = false)
+        //{
+        //    ReturnStuffer result = new ReturnStuffer()
+        //    {
+        //        Result = false,
+        //    };
+        //    DirectoryInfo dir = new DirectoryInfo(srcDir);
+
+        //    if (!dir.Exists)
+        //    {
+        //        throw new DirectoryNotFoundException("Source directory not found: " + srcDir);
+        //    }
+
+        //    DirectoryInfo[] dirs = dir.GetDirectories();
+
+        //    // Create dst directories 
+        //    if (!Directory.Exists(dstDir))
+        //    {
+        //        Directory.CreateDirectory(dstDir);
+        //    }
+
+        //    if (!Directory.Exists(dir.Name))
+        //    {
+        //        Directory.CreateDirectory(Path.Combine(dstDir, dir.Name));
+        //    }
+
+        //    result.Files.Add(new FileSelection()
+        //    {
+        //        Path = Path.Combine(dstDir, dir.Name),
+        //        State = FileState.TRANSFERRED,
+        //        Type = FileSelectionType.DIRECTORY,
+        //    });
+
+
+        //    FileInfo[] files = dir.GetFiles();
+        //    foreach (FileInfo file in files)
+        //    {
+        //        string temppath = Path.Combine(dstDir, dir.Name,file.Name);
+        //        file.CopyTo(temppath, false);
+        //        result.Files.Add(new FileSelection() {Path=temppath, State=FileState.TRANSFERRED, Type=FileSelectionType.FILE});
+        //    }
+
+        //    if (recursive)
+        //    {
+        //        foreach (DirectoryInfo subdir in dirs)
+        //        {
+        //            string temppath = Path.Combine(dstDir, dir.Name, subdir.Name);
+        //            ReturnStuffer subresult = directoryCopy(subdir.FullName, temppath, recursive, overwrite);
+        //            result.Files.AddRange(subresult.Files);
+        //        }
+        //    }
+        //    result.Result = true;
+        //    return result;
+        //}
+
+
         private static ReturnStuffer fileCopyAsUser(string srcFilename, string dstDirname, bool overwrite) => 
-            ImpersonationHelper.ImpersonateWithBoolRet(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => fileCopy(srcFilename, dstDirname, overwrite));
+            ImpersonationHelper.ImpersonateWithReturnStuffer(ConfigHandler.Domain, ConfigHandler.Username, ConfigHandler.Password, () => fileCopy(srcFilename, dstDirname, overwrite));
+
 
         /// <summary>
         /// 
@@ -242,6 +337,7 @@ namespace BulkDataMuncher
             {
                 file.CopyTo(dstFilepath, overwrite);
                 returnStuffer.Files.Add(new FileSelection() { Path=dstFilepath, State = FileState.TRANSFERRED, Type = FileSelectionType.FILE});
+                Util.ProgressInfo.Increment();
                 returnStuffer.Result = true;
             }
             catch (Exception ex)
@@ -366,7 +462,7 @@ namespace BulkDataMuncher
         /// <param name="actionToExecute"></param>
         /// <returns></returns>
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public static Util.ReturnStuffer ImpersonateWithBoolRet(string domainName, string userName, string userPassword, Func<Util.ReturnStuffer> actionToExecute)
+        public static Util.ReturnStuffer ImpersonateWithReturnStuffer(string domainName, string userName, string userPassword, Func<Util.ReturnStuffer> actionToExecute)
         {
             SafeTokenHandle safeTokenHandle;
             Util.ReturnStuffer returnStuffer = new Util.ReturnStuffer();
