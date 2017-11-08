@@ -44,10 +44,18 @@ namespace BulkDataMuncher
 
         private void btnNext_OnClick(object sender, RoutedEventArgs e)
         {
-            Case = new CaseInfo()
-            {
-                Number = txtZaaknummer.Text
-            };
+            //if (Case == null)
+            //{
+            //    if (MessageBox.Show("Zaak details ophalen?", "Ophalen gegevens", MessageBoxButton.YesNo,
+            //            MessageBoxImage.Question) == MessageBoxResult.Yes)
+            //    {
+            //        fetchCase();
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
 
             bool caseDatabaseRowExists = CasesDB.Exists(Case.Number);
             bool caseDirectoryExists = Util.DirectoryExistst(Case.CaseDirectory);
@@ -81,14 +89,27 @@ namespace BulkDataMuncher
 
         private void btnFetchCase_OnClick(object sender, RoutedEventArgs e)
         {
-            Case = new CaseInfo(isNew:false)
-            {
-                Number = txtZaaknummer.Text
-            };
+            fetchCase();
+        }
 
-            if (CasesDB.Exists(Case.Number))
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(txtZaaknummer);
+        }
+
+        private bool fetchCase()
+        {
+            bool result = false;
+
+            txtZaaknaam.Text = string.Empty;
+            txtZaakEigenaar.Text = string.Empty;
+            dpCase.DisplayDate = DateTime.MinValue;
+            dpCase.Text = DateTime.MinValue.ToString();
+
+
+            if (CasesDB.Exists(txtZaaknummer.Text))
             {
-                Case = CasesDB.GetCase(Case.Number);
+                Case = CasesDB.GetCase(txtZaaknummer.Text);
 
                 txtZaaknaam.Text = Case.Name;
                 txtZaakEigenaar.Text = Case.Owner;
@@ -96,13 +117,17 @@ namespace BulkDataMuncher
                 dpCase.Text = Case.Date.ToString();
 
                 btnNext.IsEnabled = true;
+                result = true;
             }
-
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            Keyboard.Focus(txtZaaknummer);
+            else
+            {
+                Case = null;
+                btnNext.IsEnabled = false;
+                result = false;
+                MessageBox.Show($"Zaak {txtZaaknummer.Text} niet gevonden", "Niet gevonden", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                
+            }
+            return result;
         }
     }
 }

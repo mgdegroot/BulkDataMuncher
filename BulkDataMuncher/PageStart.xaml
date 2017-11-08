@@ -20,12 +20,24 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <!--<StackPanel>
-            
-        </StackPanel>-->
-        <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="btnNew_OnClick">
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="4">
+            <Button Margin="2,2,2,2" Width="75" Height="40" Name="btnNew" Click="btnNew_OnClick" ToolTip="Kopieer data voor een nog niet bestaande zaak">
+                <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgPlusPerson}"/>
+            </Button>
+            <Button Margin="2,2,2,2" Width="75" Height="40"  Name="btnModify" Click="btnModify_OnClick" ToolTip="Voeg data toe aan al bestaaande data van zaak">
+                <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgFolder}"/>
+            </Button>
+            <Button Margin="2,2,2,2" Width="75" Height="40"  Name="btnOverview" Click="btnOverview_OnClick" ToolTip="Overzichten en rapportages">
+                <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgLibrary}"/>
+            </Button>
+            <Button Margin="2,2,2,2" VerticalAlignment="Bottom" Width="75"  Height="40" Name="btnConfig" Click="btnConfig_OnClick" ToolTip="Configuratie en potentie tot vernaggelen...">
+                <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgControlPanel}"/>
+            </Button>
+            <!--<Button Margin="2,2,2,2" Content="TEST" Name="btnTest" Click="btnTest_OnClick"/>-->
+        </StackPanel>
+        <!--<Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnNew" Click="btnNew_OnClick">
             <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgPlusPerson}"/>
         </Button>
         <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="10,10,10,10" Width="75" Name="btnModify" Click="btnModify_OnClick">
@@ -36,7 +48,7 @@
         </Button>
         <Button Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Margin="10,10,10,10" VerticalAlignment="Bottom" Width="75" Height="35" Name="btnConfig" Click="btnConfig_OnClick">
             <Rectangle Margin="2,2,2,2" Width="30" Height="30" Fill="{StaticResource ImgControlPanel}"/>
-        </Button>
+        </Button>-->
         <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" >
             <ScrollViewer.Style>
                 <Style TargetType="{x:Type ScrollViewer}">

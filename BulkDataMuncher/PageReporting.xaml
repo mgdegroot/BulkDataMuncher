@@ -15,32 +15,32 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="10,10,10,10" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Top" AutoGenerateColumns="False" Name="dgCases" IsReadOnly="True">
+        <DataGrid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="2,2,2,2" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Top" AutoGenerateColumns="False" Name="dgCases" IsReadOnly="True">
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="dgCases_row_DoubleClick"/>
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Nummer" Binding="{Binding Number}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Naam" Binding="{Binding Name}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Eigenaar" Binding="{Binding Owner}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Datum" Binding="{Binding Date}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Nummer" Binding="{Binding number}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Naam" Binding="{Binding name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Eigenaar" Binding="{Binding owner}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Datum" Binding="{Binding create_date}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Grid.Column="0" Grid.Row="1" Margin="10,10,10,10" Content="Export selectie" Name="btnExportSelected" Click="btnExportSelected_OnClick"/>
-        <Button Grid.Column="1" Grid.Row="1" Margin="10,10,10,10" Content="Export alles" Name="btnExportAll" Click="btnExportAll_OnClick"/>
-        <CheckBox Grid.Column="2" Grid.Row="1" Margin="10,10,10,10" Content="inc lijst inhoud" IsChecked="True" Name="chkIncFilenames" />
-        <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" Name="dgContentCase" IsReadOnly="True">
+        <Button Grid.Column="0" Grid.Row="1" Margin="2,2,2,2" Content="Export selectie" Name="btnExportSelected" Click="btnExportSelected_OnClick" VerticalAlignment="Top" Height="25"/>
+        <Button Grid.Column="1" Grid.Row="1" Margin="2,2,2,2" Content="Export alles" Name="btnExportAll" Click="btnExportAll_OnClick" VerticalAlignment="Top" Height="25"/>
+        <CheckBox Grid.Column="2" Grid.Row="1" Margin="2,2,2,2" Content="inc lijst inhoud" IsChecked="True" Name="chkIncFilenames" VerticalAlignment="Top" Height="25"/>
+        <DataGrid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="2,2,2,2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" Name="dgContentCase" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Nummer" Binding="{Binding Number}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Pad" Binding="{Binding Path}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Soort" Binding="{Binding FileType}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Datum" Binding="{Binding ArchiveDate}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Nummer" Binding="{Binding case_number}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Pad" Binding="{Binding path}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Soort" Binding="{Binding filetype}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Datum" Binding="{Binding archive_date}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

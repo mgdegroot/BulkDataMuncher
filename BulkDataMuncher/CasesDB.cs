@@ -6,11 +6,184 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace BulkDataMuncher
 {
-    public static class CasesDB
+
+    public static class CasesDB {
+        private const string TABLE_META = "meta";
+        private const string TABLE_CASE = "caseinfo";
+        private const string TABLE_CASE_CONTENT = "casecontent";
+        private const string DATE_FORMAT = "yyyy-MM-dd";
+        private const string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        private static MySqlConnection connection;
+
+        static CasesDB()
+        {
+            //string connStr = "server=192.168.20.60;user=<gebruiker>;database=datamuncher;port=3307;password=<wachtwoord>;convert zero datetime=True";
+            Open();
+        }
+
+        public static bool IsOpen => connection != null && connection.State == ConnectionState.Open;
+
+        public static bool Open()
+        {
+            bool result = false;
+
+            if (!string.IsNullOrEmpty(ConfigHandler.ConnectionString))
+            {
+                connection = new MySqlConnection(ConfigHandler.ConnectionString);
+                connection.Open();
+                result = true;
+            }
+
+            return result;
+        }
+
+
+        public static bool Exists(string caseNumber)
+        {
+            bool result = false;
+            string qry = $"SELECT COUNT(*) FROM {TABLE_CASE} WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
+
+            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            object isThere = cmd.ExecuteScalar();
+
+            result = (isThere != null && Convert.ToInt32(isThere) > 0);
+
+            //if (isThere != null)
+            //{
+            //    int cnt = Convert.ToInt32(isThere);
+            //}
+
+            //if (reader.Read())
+            //{
+            //    result = true;
+            //}
+            //else
+            //{
+            //    result = false;
+            //}
+            //reader.Close();
+            return result;
+        }
+
+        public static void AddCase(CaseInfo theCase)
+        {
+            string qry = $"INSERT INTO {TABLE_CASE}(`number`, `name`, `owner`, `create_date`) VALUES('{MySqlHelper.EscapeString(theCase.Number)}','{MySqlHelper.EscapeString(theCase.Name)}', '{MySqlHelper.EscapeString(theCase.Owner)}', '{theCase.Date.ToString(DATE_FORMAT)}')";
+
+            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void ModifyCase(CaseInfo theCase)
+        {
+
+            string qry =
+                $"UPDATE {TABLE_CASE} SET `number` = '{MySqlHelper.EscapeString(theCase.Number)}', `name`='{MySqlHelper.EscapeString(theCase.Name)}', `owner`='{MySqlHelper.EscapeString(theCase.Owner)}', `create_date`='{theCase.Date.ToString(DATE_FORMAT)}' WHERE `number`='{MySqlHelper.EscapeString(theCase.Number)}'";
+
+            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void AddTransferredFileToCaseDB(Util.FileSelection fileSelection, CaseInfo theCase)
+        {
+            // TODO: replace does not work as intented as long as the pri keys are not there .... -->
+            string qry = $@"REPLACE INTO {TABLE_CASE_CONTENT}(case_number, path, filetype, archive_date) VALUES('{MySqlHelper.EscapeString(theCase.Number)}', '{MySqlHelper.EscapeString(fileSelection.Path)}', '{fileSelection.Type}', '{DateTime.Now.ToString(DATETIME_FORMAT)}')";
+
+            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void AddTransferedFilesToCaseDB(List<Util.FileSelection> fileSelections, CaseInfo theCase)
+        {
+            foreach (var fileSelection in fileSelections)
+            {
+                if (fileSelection.State == Util.FileState.TRANSFERRED)
+                {
+                    AddTransferredFileToCaseDB(fileSelection, theCase);
+                }
+            }
+
+        }
+
+        public static CaseInfo GetCase(string caseNumber)
+        {
+            string qry = $"SELECT number, name, owner, create_date, last_modify_date FROM {TABLE_CASE} WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
+            CaseInfo retVal;
+
+            MySqlCommand cmd = new MySqlCommand(qry, connection);
+
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                retVal = new CaseInfo()
+                {
+                    Number = reader[0] as string,
+                    Name = reader[1] as string,
+                    Owner = reader[2] as string,
+                    Date = (DateTime)reader[3] ,
+                    IsNew = false,
+                };
+            }
+            else
+            {
+                retVal = null;
+            }
+            reader.Close();
+
+            return retVal;
+        }
+
+        public static MySqlDataAdapter GetDataAdapterCases(string caseNumber = "")
+        {
+            string qry = $"SELECT number, name, owner, create_date FROM {TABLE_CASE}";
+
+
+            if (!string.IsNullOrEmpty(caseNumber))
+            {
+                qry += $" WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
+            }
+            MySqlDataAdapter adapter = new MySqlDataAdapter(qry, connection);
+
+            return adapter;
+        }
+
+        public static MySqlDataAdapter GetDataAdapterCaseContent(string caseNumber)
+        {
+            string qry = $"SELECT case_number, path, filetype, archive_date FROM {TABLE_CASE_CONTENT} WHERE case_number = '{MySqlHelper.EscapeString(caseNumber)}'";
+            MySqlDataAdapter adapter = new MySqlDataAdapter(qry, connection);
+            return adapter;
+        }
+
+        //private static MySqlConnection connection
+        //{
+        //    get
+        //    {
+        //        string connStr = "server=192.168.20.60;user=dr_db;database=datamuncher;port=3307;password=Welkom01";
+        //        MySqlConnection conn = new MySqlConnection(connStr);
+        //        //try
+        //        //{
+        //        //    Console.WriteLine("Connecting to MySQL...");
+        //        //    conn.Open();
+        //        //    // Perform database operations
+        //        //}
+        //        //catch (Exception ex)
+        //        //{
+        //        //    Console.WriteLine(ex.ToString());
+        //        //}
+        //        return conn;
+        //    }
+
+        //}
+    }
+
+    public static class CasesDB_sqlite
     {
+        private const string TABLE_META = "datamuncher_meta";
         private const string TABLE_CASE = "datamuncher_cases";
         private const string TABLE_CASE_CONTENT = "datamuncher_content";
         private const string DATE_FORMAT = "yyyy-MM-dd";
@@ -26,14 +199,16 @@ namespace BulkDataMuncher
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Open();
+
                 string qryCreateTableCase = $"CREATE TABLE {TABLE_CASE} (Number VARCHAR(30), Name VARCHAR(255), Owner VARCHAR(255), Date VARCHAR(50))";
                 string qryCreateTableCaseContent = $"CREATE TABLE {TABLE_CASE_CONTENT} (CaseNumber VARCHAR(30), Path VARCHAR(255), FileType VARCHAR(4), ArchiveDate VARCHAR(50))";
-
+                string qryCreateTableMeta = $"CREATE TABLE {TABLE_META} (Key VARCHAR(255), Value VARCHAR(512))";
 
                 SQLiteCommand command = new SQLiteCommand(qryCreateTableCase, connection);
-                
                 command.ExecuteNonQuery();
                 command = new SQLiteCommand(qryCreateTableCaseContent, connection);
+                command.ExecuteNonQuery();
+                command = new SQLiteCommand(qryCreateTableMeta, connection);
                 command.ExecuteNonQuery();
 
                 connection.Close();

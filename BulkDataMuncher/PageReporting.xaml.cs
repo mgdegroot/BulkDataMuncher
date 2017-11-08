@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ClosedXML.Excel;
+using MySql.Data.MySqlClient;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace BulkDataMuncher
@@ -33,7 +34,7 @@ namespace BulkDataMuncher
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            SQLiteDataAdapter adapterCase = CasesDB.GetDataAdapterCases();
+            MySqlDataAdapter adapterCase = CasesDB.GetDataAdapterCases();
             DataTable dtCase = new DataTable("datamuncher_case");
             adapterCase.Fill(dtCase);
             dgCases.ItemsSource = dtCase.DefaultView;
@@ -52,7 +53,7 @@ namespace BulkDataMuncher
             DataGridRow row = sender as DataGridRow;
             
             string caseNumber = ((System.Data.DataRowView)row.Item)[0].ToString();
-            SQLiteDataAdapter adapter = CasesDB.GetDataAdapterCaseContent(caseNumber);
+            MySqlDataAdapter adapter = CasesDB.GetDataAdapterCaseContent(caseNumber);
 
             DataTable dt = new DataTable("datamuncher_case_content");
             adapter.Fill(dt);
@@ -73,7 +74,7 @@ namespace BulkDataMuncher
 
         private void export(string caseNumber = "")
         {
-            SQLiteDataAdapter adapterCase = CasesDB.GetDataAdapterCases(caseNumber);
+            MySqlDataAdapter adapterCase = CasesDB.GetDataAdapterCases(caseNumber);
 
 
             DataTable dtCase = new DataTable("zaken");
@@ -86,7 +87,7 @@ namespace BulkDataMuncher
                 foreach (DataRow row in dtCase.Rows)
                 {
                     string tmpCase = row[0].ToString();
-                    SQLiteDataAdapter adapterCaseContent = CasesDB.GetDataAdapterCaseContent(tmpCase);
+                    MySqlDataAdapter adapterCaseContent = CasesDB.GetDataAdapterCaseContent(tmpCase);
 
                     DataTable dtCaseContent = new DataTable($"zaak_{tmpCase}");
                     adapterCaseContent.Fill(dtCaseContent);

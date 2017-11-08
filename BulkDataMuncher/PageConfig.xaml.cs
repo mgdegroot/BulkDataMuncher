@@ -35,27 +35,68 @@ namespace BulkDataMuncher
             txtDomain.Text = ConfigHandler.Domain;
             txtUsername.Text = ConfigHandler.Username;
             txtPassword.Password = ConfigHandler.Password;
-            txtDatabase.Text = ConfigHandler.DatabasePath;
+
+            //txtDatabase.Text = ConfigHandler.DatabasePath;
+            // do not fill config password here...
+
             btnEnableStuff.IsChecked = ConfigHandler.EnableWeirdo;
             btnEnableStuff.Content = ConfigHandler.EnableWeirdo ? "YEP" : "NOPE";
         }
 
+        private bool checkPassworld()
+        {
+            // TODO: implement hashing / salting stuff (overkill but still...)-->
+            if (txtCurrentConfigPassword.Password == ConfigHandler.ConfigPassword)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            //Store a password hash:
+            //Util.PasswordHash hash = new Util.PasswordHash("password");
+            //byte[] hashBytes = hash.ToArray();
+
+            //Check password against a stored hash
+            //byte[] hashBytes = 
+            //Util.PasswordHash hash = new Util.PasswordHash(hashBytes);
+            //if (!hash.Verify("newly entered password"))
+            //{
+            //    throw new System.UnauthorizedAccessException();
+            //}
+        }
+
         private void btnSave_OnClick(object sender, RoutedEventArgs e)
         {
+
+            if (!checkPassworld())
+            {
+                MessageBox.Show("Fout wachtwoord.", "FOEI", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
             ConfigHandler.DestinationBase = txtDestination.Text;
 
             ConfigHandler.DestinationBase = txtDestination.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDestination.Text;
             ConfigHandler.Domain = txtDomain.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDomain.Text;
             ConfigHandler.Username = txtUsername.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtUsername.Text;
             ConfigHandler.Password = txtPassword.Password;
-            ConfigHandler.DatabasePath = txtDatabase.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDatabase.Text;
+            ConfigHandler.ConnectionString = txtConnectionString.Text;
+            //ConfigHandler.DatabasePath = txtDatabase.Text == ConfigHandler.VALUE_DEFAULT ? String.Empty : txtDatabase.Text;
             ConfigHandler.EnableWeirdo = (bool) btnEnableStuff.IsChecked;
-
-            // TODO: UserContext -->
-            if (!File.Exists(ConfigHandler.DatabasePath))
+            if (!String.IsNullOrEmpty(txtConfigPassword.Password))
             {
-                CasesDB.CreateDatabase();
+                ConfigHandler.ConfigPassword = txtConfigPassword.Password;
             }
+
+            //// TODO: UserContext -->
+            //if (!File.Exists(ConfigHandler.DatabasePath))
+            //{
+            //    CasesDB.CreateDatabase();
+            //}
 
             if (NavigationService.CanGoBack)
             {

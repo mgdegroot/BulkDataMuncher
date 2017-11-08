@@ -17,7 +17,9 @@ namespace BulkDataMuncher
         public const string KEY_DESTINATIONBASE = "DESTINATIONBASE";
         public const string KEY_DB_PATH = "DB_PATH";
         public const string VALUE_DEFAULT = "";
-        
+        public const string KEY_CONFIG_PASSWORD = "CONFIG_PASSWORD";
+        public const string KEY_CONNECTIONSTRING = "CONNECTIONSTRING";
+
         public static string Username
         {
             get => ConfigurationManager.AppSettings[KEY_USERNAME] ?? VALUE_DEFAULT;
@@ -50,10 +52,25 @@ namespace BulkDataMuncher
         {
             get
             {
-                string test = ConfigurationManager.AppSettings[KEY_DB_PATH];
+                //string test = ConfigurationManager.AppSettings[KEY_DB_PATH];
                 return ConfigurationManager.AppSettings[KEY_DB_PATH] ?? VALUE_DEFAULT;
             }
             set => writeSetting(KEY_DB_PATH, value);
+        }
+
+        public static string ConnectionString
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings[KEY_CONNECTIONSTRING] ?? VALUE_DEFAULT;
+            }
+            set => writeSetting(KEY_CONNECTIONSTRING, value);
+        }
+
+        public static string ConfigPassword
+        {
+            get => ConfigurationManager.AppSettings[KEY_CONFIG_PASSWORD] ?? VALUE_DEFAULT;
+            set => writeSetting(KEY_CONFIG_PASSWORD, value);
         }
 
         public static bool EnableWeirdo

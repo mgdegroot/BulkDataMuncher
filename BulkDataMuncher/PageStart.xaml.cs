@@ -70,5 +70,10 @@ namespace BulkDataMuncher
             PageReporting pageReporting = new PageReporting();
             NavigationService.Navigate(pageReporting);
         }
+
+        private void btnTest_OnClick(object sender, RoutedEventArgs e)
+        {
+            //CasesDB_MySQL.test();
+        }
     }
 }
