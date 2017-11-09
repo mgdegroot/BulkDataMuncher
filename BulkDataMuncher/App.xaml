@@ -23,6 +23,7 @@
         <ImageBrush x:Key="ImgBackward" ImageSource="/Resources/imgBackward.png"/>
         <ImageBrush x:Key="ImgRefresh" ImageSource="/Resources/imgRefresh.png"/>
         <ImageBrush x:Key="ImgLibrary" ImageSource="/Resources/imgLibrary.png"/>
+        <ImageBrush x:Key="ImgHome" ImageSource="/Resources/imgHome.png"/>
         <!--<DrawingBrush x:Key="brushNext">
             <DrawingBrush.Drawing>
                 <DrawingGroup>

@@ -110,7 +110,11 @@ namespace BulkDataMuncher
 
             Util.ProgressInfo pi = new Util.ProgressInfo();
             List<Util.FileSelection> transferList = new List<Util.FileSelection>();
-            
+
+            // DEBUG
+            //System.Threading.Thread.Sleep(60000);
+
+
             foreach (Util.FileSelection fileSelection in workerCase.Files)
             {
                 if (worker.CancellationPending)

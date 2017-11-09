@@ -143,6 +143,16 @@ namespace BulkDataMuncher {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap imgHome {
+            get {
+                object obj = ResourceManager.GetObject("imgHome", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap imgInfo {
             get {
                 object obj = ResourceManager.GetObject("imgInfo", resourceCulture);

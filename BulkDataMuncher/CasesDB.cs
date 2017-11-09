@@ -46,54 +46,61 @@ namespace BulkDataMuncher
         public static bool Exists(string caseNumber)
         {
             bool result = false;
-            string qry = $"SELECT COUNT(*) FROM {TABLE_CASE} WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
-
-            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            string prc = "prc_case_exists";
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@number", caseNumber);
             object isThere = cmd.ExecuteScalar();
 
-            result = (isThere != null && Convert.ToInt32(isThere) > 0);
+            result = (isThere != null && Convert.ToBoolean(isThere) );
 
-            //if (isThere != null)
-            //{
-            //    int cnt = Convert.ToInt32(isThere);
-            //}
-
-            //if (reader.Read())
-            //{
-            //    result = true;
-            //}
-            //else
-            //{
-            //    result = false;
-            //}
-            //reader.Close();
             return result;
         }
 
         public static void AddCase(CaseInfo theCase)
         {
-            string qry = $"INSERT INTO {TABLE_CASE}(`number`, `name`, `owner`, `create_date`) VALUES('{MySqlHelper.EscapeString(theCase.Number)}','{MySqlHelper.EscapeString(theCase.Name)}', '{MySqlHelper.EscapeString(theCase.Owner)}', '{theCase.Date.ToString(DATE_FORMAT)}')";
-
-            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            string prc = "prc_case_add";
+            
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@number", theCase.Number);
+            cmd.Parameters.AddWithValue("@name", theCase.Name);
+            cmd.Parameters.AddWithValue("@owner", theCase.Owner);
+            cmd.Parameters.AddWithValue("@create_date", theCase.Date);
             cmd.ExecuteNonQuery();
         }
 
         public static void ModifyCase(CaseInfo theCase)
         {
-
-            string qry =
-                $"UPDATE {TABLE_CASE} SET `number` = '{MySqlHelper.EscapeString(theCase.Number)}', `name`='{MySqlHelper.EscapeString(theCase.Name)}', `owner`='{MySqlHelper.EscapeString(theCase.Owner)}', `create_date`='{theCase.Date.ToString(DATE_FORMAT)}' WHERE `number`='{MySqlHelper.EscapeString(theCase.Number)}'";
-
-            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            string prc = "prc_case_modify";
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@number", theCase.Number);
+            cmd.Parameters.AddWithValue("@name", theCase.Name);
+            cmd.Parameters.AddWithValue("@owner", theCase.Owner);
+            cmd.Parameters.AddWithValue("@create_date", theCase.Date);
             cmd.ExecuteNonQuery();
         }
 
         public static void AddTransferredFileToCaseDB(Util.FileSelection fileSelection, CaseInfo theCase)
         {
-            // TODO: replace does not work as intented as long as the pri keys are not there .... -->
-            string qry = $@"REPLACE INTO {TABLE_CASE_CONTENT}(case_number, path, filetype, archive_date) VALUES('{MySqlHelper.EscapeString(theCase.Number)}', '{MySqlHelper.EscapeString(fileSelection.Path)}', '{fileSelection.Type}', '{DateTime.Now.ToString(DATETIME_FORMAT)}')";
+            string prc = "prc_content_add";
 
-            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@case_number", theCase.Number);
+            cmd.Parameters.AddWithValue("@path", fileSelection.Path);
+            cmd.Parameters.AddWithValue("@filetype", fileSelection.Type);
+            //cmd.Parameters.AddWithValue("@archive_date", DateTime.Now);
+            cmd.Parameters.AddWithValue("@archive_date", "2017-12-12");
             cmd.ExecuteNonQuery();
         }
 
@@ -111,10 +118,14 @@ namespace BulkDataMuncher
 
         public static CaseInfo GetCase(string caseNumber)
         {
-            string qry = $"SELECT number, name, owner, create_date, last_modify_date FROM {TABLE_CASE} WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
+            //string qry = $"SELECT number, name, owner, create_date, last_modify_date FROM {TABLE_CASE} WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
             CaseInfo retVal;
-
-            MySqlCommand cmd = new MySqlCommand(qry, connection);
+            string prc = "prc_case_get";
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@number", caseNumber);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -138,24 +149,30 @@ namespace BulkDataMuncher
             return retVal;
         }
 
-        public static MySqlDataAdapter GetDataAdapterCases(string caseNumber = "")
+        public static MySqlDataAdapter GetDataAdapterCases(string caseNumber = "0")
         {
-            string qry = $"SELECT number, name, owner, create_date FROM {TABLE_CASE}";
-
-
-            if (!string.IsNullOrEmpty(caseNumber))
+            string prc = "prc_case_get";
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
             {
-                qry += $" WHERE number = '{MySqlHelper.EscapeString(caseNumber)}'";
-            }
-            MySqlDataAdapter adapter = new MySqlDataAdapter(qry, connection);
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@number", caseNumber);
+
+            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
 
             return adapter;
         }
 
         public static MySqlDataAdapter GetDataAdapterCaseContent(string caseNumber)
         {
-            string qry = $"SELECT case_number, path, filetype, archive_date FROM {TABLE_CASE_CONTENT} WHERE case_number = '{MySqlHelper.EscapeString(caseNumber)}'";
-            MySqlDataAdapter adapter = new MySqlDataAdapter(qry, connection);
+            string prc = "prc_content_get";
+            MySqlCommand cmd = new MySqlCommand(prc, connection)
+            {
+                CommandType = CommandType.StoredProcedure,
+            };
+            cmd.Parameters.AddWithValue("@case_number", caseNumber);
+
+            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             return adapter;
         }
 
