@@ -27,7 +27,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <SupportUrl>http://catnipderby.nl</SupportUrl>
+    <ProductName>DR DB Bulk Data Muncher</ProductName>
+    <PublisherName>Marcel de Groot</PublisherName>
+    <SuiteName>DR DB Bulk Data Muncher</SuiteName>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

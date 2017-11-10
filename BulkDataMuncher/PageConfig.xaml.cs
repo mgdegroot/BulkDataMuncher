@@ -22,9 +22,11 @@ namespace BulkDataMuncher
     /// </summary>
     public partial class PageConfig : Page
     {
-        public PageConfig()
+        private bool freshStart = false;
+        public PageConfig(bool freshStart=false)
         {
             InitializeComponent();
+            this.freshStart = freshStart;
             init();
 
         }
@@ -98,7 +100,16 @@ namespace BulkDataMuncher
             //    CasesDB.CreateDatabase();
             //}
 
-            if (NavigationService.CanGoBack)
+            if (freshStart)
+            {
+                // due to a bug in reading the config after freshly writing a new config we need to restart the application. Just exit with message here -->
+                if (MessageBox.Show("Nieuwe config geschreven. De applicatie sluit nu om deze actief te maken...",
+                        "Herstart nodig", MessageBoxButton.OK, MessageBoxImage.Exclamation) == MessageBoxResult.OK)
+                {
+                    Application.Current.Shutdown(0);
+                }
+            }
+            else if (NavigationService.CanGoBack)
             {
                 NavigationService.GoBack();
             }

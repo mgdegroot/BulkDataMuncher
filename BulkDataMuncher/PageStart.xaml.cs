@@ -35,7 +35,7 @@ namespace BulkDataMuncher
                 if (MessageBox.Show("Configuratie niet aanwezig. Invullen voor gebruik", "Configuratie niet gevonden",
                         MessageBoxButton.OK, MessageBoxImage.Warning) == MessageBoxResult.OK)
                 {
-                    NavigationService.Navigate(new PageConfig());
+                    NavigationService.Navigate(new PageConfig(true));
                 }
 
             }

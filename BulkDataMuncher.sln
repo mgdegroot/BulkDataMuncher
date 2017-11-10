@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulkDataMuncher", "BulkDataMuncher\BulkDataMuncher.csproj", "{4C707A61-A27D-4E1C-823B-E3CF317E1387}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BulkDataMuncherSetup", "BulkDataMuncherSetup\BulkDataMuncherSetup.vdproj", "{487DD8B6-458F-45DE-8C11-A84E929738DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,9 @@ Global
 		{4C707A61-A27D-4E1C-823B-E3CF317E1387}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C707A61-A27D-4E1C-823B-E3CF317E1387}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C707A61-A27D-4E1C-823B-E3CF317E1387}.Release|Any CPU.Build.0 = Release|Any CPU
+		{487DD8B6-458F-45DE-8C11-A84E929738DA}.Debug|Any CPU.ActiveCfg = Debug
+		{487DD8B6-458F-45DE-8C11-A84E929738DA}.Release|Any CPU.ActiveCfg = Release
+		{487DD8B6-458F-45DE-8C11-A84E929738DA}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
