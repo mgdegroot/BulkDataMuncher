@@ -20,18 +20,19 @@
     <PublishUrl>g:\publish\BulkDataMuncher\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <UpdateUrl>\\192.168.20.60\Diversen\publish\BulkDataMuncher\</UpdateUrl>
     <SupportUrl>http://catnipderby.nl</SupportUrl>
     <ProductName>DR DB Bulk Data Muncher</ProductName>
     <PublisherName>Marcel de Groot</PublisherName>
     <SuiteName>DR DB Bulk Data Muncher</SuiteName>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -60,13 +61,20 @@
     <ManifestCertificateThumbprint>0EFE60713DD76F39666FDE3E8C6AC652A5BA0316</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>BulkDataMuncher_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BulkDataMuncher.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>imgInspectorGadget_appicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClosedXML, Version=0.90.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
@@ -245,6 +253,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="BulkDataMuncher_1_TemporaryKey.pfx" />
     <None Include="BulkDataMuncher_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -272,6 +281,7 @@
     <Content Include="database\prc_case_modify.sql" />
     <Content Include="database\prc_content_add.sql" />
     <Content Include="database\prc_content_get.sql" />
+    <Resource Include="imgInspectorGadget_appicon.ico" />
     <Content Include="Resources\Make_It_Bun_Dem_downsample.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

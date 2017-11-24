@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulkDataMuncher", "BulkData
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BulkDataMuncherSetup", "BulkDataMuncherSetup\BulkDataMuncherSetup.vdproj", "{487DD8B6-458F-45DE-8C11-A84E929738DA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{DC13907A-21B1-47B2-AF0F-0CEAE59AAE89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
