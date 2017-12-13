@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5AC6E0DBD1064270AE014104220A443E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_603D4D53ACE8C19A9D7D6C77409FB8B1"
         "OwnerKey" = "8:_B389CE88A8624F37A28E925D83062AA6"
         "MsmSig" = "8:_UNDEFINED"
@@ -260,6 +266,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -413,6 +427,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5AC6E0DBD1064270AE014104220A443E"
+            {
+            "SourcePath" = "8:..\\BulkDataMuncher\\imgInspectorGadget_appicon.ico"
+            "TargetName" = "8:imgInspectorGadget_appicon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_4F663676A1B54CDD8C96B888BDDF78BC"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_603D4D53ACE8C19A9D7D6C77409FB8B1"
@@ -813,7 +847,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DR DB BulkDataMuncher"
         "ProductCode" = "8:{8BBAB817-2DB6-4176-81C3-CC13BDD317AC}"
-        "PackageCode" = "8:{8AFF014A-B3B2-4410-B726-B35EE7C31360}"
+        "PackageCode" = "8:{DDF986C0-B0CD-437D-99D5-F360D306E43D}"
         "UpgradeCode" = "8:{6B7EB7B9-F97C-4A9D-8D62-2371AF484E94}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -933,6 +967,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1F723389E98545F18FE13FE2E7BAB03A"
+            {
+            "Name" = "8:BulkDataMuncher"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_B389CE88A8624F37A28E925D83062AA6"
+            "Folder" = "8:_DD42C2EF9C3B461CAFCBEC0E8DF45AB0"
+            "WorkingFolder" = "8:_4F663676A1B54CDD8C96B888BDDF78BC"
+            "Icon" = "8:_5AC6E0DBD1064270AE014104220A443E"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F24A72B43FB44B8ABC087893314CFF71"
             {
             "Name" = "8:BulkDataMuncher"
@@ -944,7 +992,7 @@
             "Target" = "8:_B389CE88A8624F37A28E925D83062AA6"
             "Folder" = "8:_22D3E7344C254B18A5E76A1D146BFB34"
             "WorkingFolder" = "8:_4F663676A1B54CDD8C96B888BDDF78BC"
-            "Icon" = "8:"
+            "Icon" = "8:_5AC6E0DBD1064270AE014104220A443E"
             "Feature" = "8:"
             }
         }
